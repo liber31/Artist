@@ -5,6 +5,8 @@ const times = [];
 let step = {};
 let draw = {};
 let instances = {};
+let room = {};
+let room_index = undefined;
 let fps = 0;
 let mouse_x = 0;
 let mouse_y = 0;
@@ -88,5 +90,19 @@ window.onkeyup = function(e) {
   keyboard_check = false;
   keyboard_code - 1;
 };
+
+/* -------------------------------------------------------------------------- */
+/*                                   룸 기능                                    */
+/* -------------------------------------------------------------------------- */
+function room_goto(index) {
+  room_index = index;
+  for (let index in instances) {
+    for (let index2 in instances[index]) {
+      instances[index][index2].destroy();
+    }
+  }
+  console.log(`Room moved - ${room_index}`);
+  room[room_index]();
+}
 
 refreshLoop();

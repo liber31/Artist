@@ -1,6 +1,7 @@
 /** 게임에서 사용되는 인스턴스의 뼈대입니다 */
 class instance {
   constructor() {
+    this.alive = true;
     this.id = uuid();
     console.log(`Created instance - ${this.constructor.name} (${this.id})`);
 
@@ -18,10 +19,15 @@ class instance {
 
   /** 객체의 생사 여부를 결정 짓는 함수입니다 */
   destroy() {
-    delete step[this.id];
-    delete draw[this.id];
-    delete this;
-    console.log(`Deleted instance - ${this.constructor.name} (${this.id})`);
+    if (this.alive) {
+      console.log(`Deleted instance - ${this.constructor.name} (${this.id})`);
+      this.alive = false;
+      delete step[this.id];
+      delete draw[this.id];
+      delete this.x;
+      delete this.y;
+      delete this.id;
+    }
   }
 }
 
