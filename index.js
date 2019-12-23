@@ -1,15 +1,15 @@
-var express = require('express');
-var app = express();
-var fs = require('fs');
-var decode = require('urldecode');
+let express = require('express');
+let app = express();
+let fs = require('fs');
+let decode = require('urldecode');
 
 app.get('*', function(req, res) {
   req.url = decode(req.url);
-  var url = '/html/index.html';
-  var type = 0; // 0 is string, other is buffer
+  let url = '/html/index.html';
+  let type = 0; // 0 is string, other is buffer
   if (req.url.length > 1) {
     try {
-      var operation = req.url.split('/')[1];
+      let operation = req.url.split('/')[1];
       if (operation === 'css' || operation === 'img' || operation === 'js') {
         url = req.url;
         if (operation === 'img') {
@@ -46,4 +46,6 @@ app.listen(3000, () => {
   // 자동으로 URL을 브라우저에서 열어주는 모듈
   let opn = require('opn');
   opn('http://localhost:3000');
+
+  console.log('RUN GAME!');
 });

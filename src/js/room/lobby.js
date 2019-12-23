@@ -15,19 +15,19 @@ room['lobby'] = function() {
       if (keyboard_check) {
         switch (keyboard_code) {
           case 37:
-            this.x--;
+            this.x -= 2;
             break;
 
           case 39:
-            this.x++;
+            this.x += 2;
             break;
 
           case 38:
-            this.y--;
+            this.y -= 2;
             break;
 
           case 40:
-            this.y++;
+            this.y += 2;
             break;
         }
       }

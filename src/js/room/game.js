@@ -1,10 +1,10 @@
-room['lobby'] = function() {
+room['game'] = function() {
   class temp extends instance {
     constructor() {
       super();
 
-      this.x = 100;
-      this.y = 100;
+      this.x = 300;
+      this.y = 50;
     }
 
     step() {
@@ -15,19 +15,19 @@ room['lobby'] = function() {
       if (keyboard_check) {
         switch (keyboard_code) {
           case 37:
-            this.x--;
+            this.x -= 2;
             break;
 
           case 39:
-            this.x++;
+            this.x += 2;
             break;
 
           case 38:
-            this.y--;
+            this.y -= 2;
             break;
 
           case 40:
-            this.y++;
+            this.y += 2;
             break;
         }
       }
@@ -49,6 +49,4 @@ room['lobby'] = function() {
   }
 
   let ins = new temp();
-  let ins2 = new temp();
-  ins2.x = 0;
 };
