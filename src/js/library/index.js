@@ -10,6 +10,8 @@ let mouse_x = 0;
 let mouse_y = 0;
 let mouse_pressed = false;
 let mouse_click = false;
+let keyboard_check = false;
+let keyboard_code = -1;
 
 /* -------------------------------------------------------------------------- */
 /*                          화면을 갱신하는 함수를 선언합니다                         */
@@ -42,7 +44,7 @@ async function refreshLoop() {
 
         for (let index in draw) {
           let _item = draw[index];
-          _item.draw(canvas);
+          _item.draw();
         }
 
         /* ------------------------------ 계산된 FPS를 그립니다 ----------------------------- */
@@ -65,21 +67,26 @@ async function refreshLoop() {
 /* -------------------------------------------------------------------------- */
 /*                               입출력장치를 후킹합니다                            */
 /* -------------------------------------------------------------------------- */
-document.addEventListener('mousemove', onMouseUpdate, false);
-document.addEventListener('mouseenter', onMouseUpdate, false);
-
-document.onmousedown = function() {
-  mouse_pressed = true;
-  mouse_click = true;
-};
-
-document.onmouseup = function() {
-  mouse_click = false;
-};
-
+window.addEventListener('mousemove', onMouseUpdate, false);
+window.addEventListener('mouseenter', onMouseUpdate, false);
 function onMouseUpdate(e) {
   mouse_x = e.pageX - 5;
   mouse_y = e.pageY - 5;
 }
+window.onmousedown = function() {
+  mouse_pressed = true;
+  mouse_click = true;
+};
+window.onmouseup = function() {
+  mouse_click = false;
+};
+window.onkeydown = function(e) {
+  keyboard_check = true;
+  keyboard_code = e.which || e.keyCode;
+};
+window.onkeyup = function(e) {
+  keyboard_check = false;
+  keyboard_code - 1;
+};
 
 refreshLoop();

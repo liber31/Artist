@@ -24,3 +24,13 @@ class instance {
     console.log(`Deleted instance - ${this.constructor.name} (${this.id})`);
   }
 }
+
+/** 해당 이름을 가진 객체를 세계에서 제거합니다 */
+function instance_destroy(object_name) {
+  if (!!instances[object_name]) {
+    for (let index in instances[object_name]) {
+      let _item = instances[object_name][index];
+      _item.destroy();
+    }
+  }
+}
