@@ -7,6 +7,7 @@ let draw = {};
 let instances = {};
 let room = {};
 let room_index = undefined;
+let sprite = {};
 let fps = 0;
 let mouse_x = 0;
 let mouse_y = 0;

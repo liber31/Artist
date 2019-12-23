@@ -28,15 +28,37 @@ function draw_circle(x, y, r, fill) {
 }
 
 function draw_text(x, y, text) {
-  const fpsCounter = canvas.getContext('2d');
-  fpsCounter.font = '15px Arial';
-  fpsCounter.textAlign = 'left';
-  fpsCounter.fillText(text, x, y + 15);
+  const ctx = canvas.getContext('2d');
+  ctx.font = '15px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(text, x, y + 15);
 }
 
 function draw_text_transformed(x, y, text, size, align) {
-  const fpsCounter = canvas.getContext('2d');
-  fpsCounter.font = `${size}px Arial`;
-  fpsCounter.textAlign = align;
-  fpsCounter.fillText(text, x, y + size);
+  const ctx = canvas.getContext('2d');
+  ctx.font = `${size}px Arial`;
+  ctx.textAlign = align;
+  ctx.fillText(text, x, y + size);
+}
+
+function sprite_load(dir, sprite_name) {
+  let img = new Image();
+  img.src = dir;
+
+  sprite[sprite_name] = img;
+}
+
+function draw_sprite(x, y, sprite_name) {
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(sprite[sprite_name], x, y, sprite[sprite_name].width, sprite[sprite_name].height);
+}
+
+function draw_sprite_ext(x, y, sprite_name, align) {
+  const ctx = canvas.getContext('2d');
+  if (align == 'center') {
+    x -= sprite[sprite_name].width / 2;
+    y -= sprite[sprite_name].height / 2;
+  }
+
+  ctx.drawImage(sprite[sprite_name], x, y, sprite[sprite_name].width, sprite[sprite_name].height);
 }

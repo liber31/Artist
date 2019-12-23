@@ -40,7 +40,8 @@ room['game'] = function() {
 
     draw() {
       draw_text_transformed(this.x, this.y - 15, 'temp', 30, 'center');
-      draw_circle(this.x, this.y, 10, true);
+      // draw_circle(this.x, this.y, 10, true);
+      draw_sprite_ext(this.x, this.y, 'char', 'center');
     }
 
     adds() {
@@ -48,5 +49,6 @@ room['game'] = function() {
     }
   }
 
+  sprite_load('img/char.png', 'char');
   let ins = new temp();
 };
