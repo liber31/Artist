@@ -3,12 +3,20 @@
   <head>
     <title>Game</title>
     <meta charset="UTF-8" />
+
+    <!-- 게임 엔진 로드 -->
     <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <script type="text/javascript" src="/js/library/uuid.js"></script>
+    <script type="text/javascript" src="/js/library/instance.js"></script>
+    <script type="text/javascript" src="/js/library/draw.js"></script>
+    <script type="text/javascript" src="/js/library/index.js"></script>
+
+    <!-- 사용자 코드 -->
     <script type="text/javascript" src="/js/main.js"></script>
   </head>
 
   <!-- 게임 드로우 부분 -->
-  <body onload="draw();">
+  <body>
     <canvas id="canvas" width="640" height="360" style="border:1px solid #000000;"> </canvas>
   </body>
 </html>

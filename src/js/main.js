@@ -1,36 +1,29 @@
-function draw() {
-  var canvas = document.getElementById('canvas');
-  if (canvas.getContext) {
-    var ctx = canvas.getContext('2d');
+class temp extends instance {
+  constructor() {
+    super();
+
+    this.x = 100;
+  }
+
+  step(canvas) {
+    this.x = mouse_x;
+    this.y = mouse_y;
+    if (this.x > canvas.width / 2) {
+      console.log('delete');
+      this.destroy();
+    }
+  }
+
+  draw(canvas) {
+    const fpsCounter = canvas.getContext('2d');
+    fpsCounter.font = '15px Arial';
+    fpsCounter.textAlign = 'center';
+    fpsCounter.fillText(mouse_click, this.x, this.y);
+  }
+
+  adds() {
+    this.x += 20;
   }
 }
-function cls() {
-  var canvas = document.getElementById('canvas');
-  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-}
 
-const times = [];
-let fps;
-
-function refreshLoop() {
-  window.requestAnimationFrame(() => {
-    const now = performance.now();
-    while (times.length > 0 && times[0] <= now - 1000) {
-      times.shift();
-    }
-    times.push(now);
-    fps = times.length;
-
-    cls();
-    draw();
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext('2d');
-    ctx.font = '15px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText(fps, 15, 15);
-
-    refreshLoop();
-  });
-}
-
-refreshLoop();
+let ins = new temp();
