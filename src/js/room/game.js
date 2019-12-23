@@ -40,7 +40,7 @@ room['game'] = function() {
 
     draw() {
       draw_text_transformed(this.x, this.y - 15, 'temp', 30, 'center');
-      draw_rectangle(this.x - 10, this.y - 10, this.x + 10, this.y + 10, false);
+      draw_circle(this.x, this.y, 10, true);
     }
 
     adds() {

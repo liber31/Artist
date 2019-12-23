@@ -11,6 +11,22 @@ function draw_rectangle(x1, y1, x2, y2, fill) {
   }
 }
 
+function draw_circle(x, y, r, fill) {
+  if (!fill) {
+    const ctx = canvas.getContext('2d');
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, 2 * Math.PI);
+    ctx.stroke();
+  } else {
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'rgb(0, 0, 0, 1)';
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+  }
+}
+
 function draw_text(x, y, text) {
   const fpsCounter = canvas.getContext('2d');
   fpsCounter.font = '15px Arial';
