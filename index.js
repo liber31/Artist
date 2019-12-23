@@ -43,5 +43,7 @@ app.get('*', function(req, res) {
 });
 
 app.listen(3000, () => {
-  console.log('[Index] Website is now avaliable');
+  // 자동으로 URL을 브라우저에서 열어주는 모듈
+  let opn = require('opn');
+  opn('http://localhost:3000');
 });
