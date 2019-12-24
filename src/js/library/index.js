@@ -4,21 +4,27 @@
 const times = [];
 let step = {};
 let draw = {};
+let prepare = {};
 let instances = {};
 let room = {};
 let room_index = undefined;
 let sprite = {};
 let fps = 0;
-let mouse_x = 0;
-let mouse_y = 0;
-let mouse_pressed = false;
-let mouse_click = false;
 let keyboard_check = false;
 let keyboard_code = -1;
 let draw_color = 'black';
 let draw_alpha = 1;
 let draw_font = 'Arial';
 let draw_font_size = 15;
+
+/** 마우스의 x 좌표입니다 */
+let mouse_x = 0;
+/** 마우스의 y 좌표입니다 */
+let mouse_y = 0;
+/** 마우스가 눌러진 첫 순간에 true, 이외는 false를 반환합니다 */
+let mouse_pressed = false;
+/** 마우스가 눌러져 있으면 true, 이외는 false를 반환합니다 */
+let mouse_click = false;
 
 /* -------------------------------------------------------------------------- */
 /*                          화면을 갱신하는 함수를 선언합니다                         */
@@ -44,26 +50,42 @@ async function refreshLoop() {
           resolve();
         }
 
-        for (let index in step) {
-          let _item = step[index];
-          _item.prepare(canvas);
+        for (let depth in instances) {
+          let instances_by_depth = instances[depth];
+          for (let object_name in instances_by_depth) {
+            for (let index in instances_by_depth[object_name]) {
+              let _item = instances_by_depth[object_name][index];
+              _item.prepare(canvas);
+            }
+          }
         }
 
-        for (let index in step) {
-          let _item = step[index];
-          _item.step(canvas);
+        for (let depth in instances) {
+          let instances_by_depth = instances[depth];
+          for (let object_name in instances_by_depth) {
+            for (let index in instances_by_depth[object_name]) {
+              let _item = instances_by_depth[object_name][index];
+              _item.step(canvas);
+            }
+          }
         }
-
-        for (let index in draw) {
-          let _item = draw[index];
-          _item.draw();
+        for (let depth in instances) {
+          let instances_by_depth = instances[depth];
+          for (let object_name in instances_by_depth) {
+            for (let index in instances_by_depth[object_name]) {
+              let _item = instances_by_depth[object_name][index];
+              _item.draw(canvas);
+            }
+          }
         }
 
         /* ------------------------------ 계산된 FPS를 그립니다 ----------------------------- */
-        const ctx = canvas.getContext('2d');
-        ctx.font = '15px Arial';
-        ctx.textAlign = 'left';
-        ctx.fillText(Math.min(60, fps), 5, 15);
+        if (DEBUG) {
+          const ctx = canvas.getContext('2d');
+          ctx.font = '15px Arial';
+          ctx.textAlign = 'left';
+          ctx.fillText(Math.min(60, fps), 5, 15);
+        }
 
         /* --------------------------- 특정 변수들을 원래대로 돌려놓습니다 -------------------------- */
         mouse_pressed = false;
@@ -114,14 +136,19 @@ window.onkeyup = function(e) {
 /* -------------------------------------------------------------------------- */
 /*                                   룸 기능                                    */
 /* -------------------------------------------------------------------------- */
+/** 해당 룸으로 이동합니다 */
 function room_goto(index) {
   room_index = index;
-  for (let index in instances) {
-    for (let index2 in instances[index]) {
-      instances[index][index2].destroy();
+  for (let depth in instances) {
+    let instances_by_depth = instances[depth];
+    for (let object_name in instances_by_depth) {
+      for (let index in instances_by_depth[object_name]) {
+        let _item = instances_by_depth[object_name][index];
+        _item.destroy();
+      }
     }
   }
-  console.log(`Room moved - ${room_index}`);
+  console.log('[Room moved]', room_index);
   room[room_index]();
 }
 

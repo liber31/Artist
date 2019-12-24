@@ -2,14 +2,10 @@ room['lobby'] = function() {
   class temp extends instance {
     constructor() {
       super();
-
-      this.x = 100;
-      this.y = 100;
     }
 
     step() {
       if (this.x > canvas.width / 2) {
-        // instance_destroy('temp');
         room_goto('game');
       }
       if (keyboard_check) {
@@ -31,16 +27,12 @@ room['lobby'] = function() {
             break;
         }
       }
-      if (mouse_pressed) {
-        if (mouse_x > this.x - 10 && mouse_x < this.x + 10 && mouse_y > this.y - 10 && mouse_y < this.y + 10) {
-          alert('clicked');
-        }
-      }
     }
 
     draw() {
-      draw_text_transformed(this.x, this.y - 15, 'temp', 30, 'center');
-      draw_rectangle(this.x - 10, this.y - 10, this.x + 10, this.y + 10, false);
+      //draw_text_transformed(this.x, this.y - 15, 'temp', 'center');
+      draw_set_color('black');
+      draw_rectangle(this.x - 10, this.y - 10, this.x + 10, this.y + 10, true);
     }
 
     adds() {
@@ -48,7 +40,10 @@ room['lobby'] = function() {
     }
   }
 
-  let ins = new temp();
-  let ins2 = new temp();
-  ins2.x = 0;
+  instance_create(temp, 20, 20, 3);
+  let ins = instance_create(temp, 10, 10, 2);
+  ins.draw = () => {
+    draw_set_color('green');
+    draw_rectangle(ins.x - 10, ins.y - 10, ins.x + 10, ins.y + 10, true);
+  };
 };
