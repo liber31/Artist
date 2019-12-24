@@ -12,6 +12,8 @@ class instance {
 
     this.x = 0;
     this.y = 0;
+    this.collider_width = 0;
+    this.collider_height = 0;
 
     step[this.id] = this;
     draw[this.id] = this;
@@ -27,6 +29,17 @@ class instance {
       delete this.x;
       delete this.y;
       delete this.id;
+    }
+  }
+
+  prepare() {
+    if (mouse_x >= this.x - this.collider_width / 2 && mouse_x <= this.x + this.collider_width / 2 && mouse_y >= this.y - this.collider_height / 2 && mouse_y <= this.y + this.collider_height / 2) {
+      if (mouse_pressed && this.pressed !== undefined) {
+        this.pressed();
+      }
+      if (mouse_click && this.clicked !== undefined) {
+        this.clicked();
+      }
     }
   }
 }
@@ -45,4 +58,10 @@ function instance_create(object, x, y) {
   let ins = new object();
   ins.x = x;
   ins.y = y;
+  return ins;
+}
+
+function set_collider(ins, width, height) {
+  ins.collider_width = width;
+  ins.collider_height = height;
 }

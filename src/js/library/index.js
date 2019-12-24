@@ -17,6 +17,8 @@ let keyboard_check = false;
 let keyboard_code = -1;
 let draw_color = 'black';
 let draw_alpha = 1;
+let draw_font = 'Arial';
+let draw_font_size = 15;
 
 /* -------------------------------------------------------------------------- */
 /*                          화면을 갱신하는 함수를 선언합니다                         */
@@ -40,6 +42,11 @@ async function refreshLoop() {
 
         if (!!canvas.getContext) {
           resolve();
+        }
+
+        for (let index in step) {
+          let _item = step[index];
+          _item.prepare(canvas);
         }
 
         for (let index in step) {
@@ -73,6 +80,7 @@ async function refreshLoop() {
 function setDrawMode(ctx) {
   ctx.restore();
   ctx.scale(1, 1);
+  ctx.font = `${draw_font_size}px ${draw_font}`;
   ctx.lineWidth = 1;
   ctx.globalAlpha = draw_alpha;
   ctx.fillStyle = draw_color;

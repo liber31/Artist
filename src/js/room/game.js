@@ -28,28 +28,38 @@ room['game'] = function() {
             break;
         }
       }
-      if (mouse_pressed) {
-        if (mouse_x > this.x - 10 && mouse_x < this.x + 10 && mouse_y > this.y - 10 && mouse_y < this.y + 10) {
-          alert('clicked');
-          draw_color = 'green';
-        }
-      }
+      // if (mouse_pressed) {
+      //   if (mouse_x > this.x - 10 && mouse_x < this.x + 10 && mouse_y > this.y - 10 && mouse_y < this.y + 10) {
+      //     alert('clicked');
+      //     draw_color = 'green';
+      //   }
+      // }
     }
 
     draw() {
-      draw_alpha = 0.5;
+      draw_set_alpha(0.2);
+      draw_set_color('green');
+      draw_rectangle(this.x - 25, this.y - 25, this.x + 25, this.y + 25, true);
+      draw_set_color('black');
+      draw_set_alpha(0.5);
       draw_line_width(canvas.width / 2, 0, canvas.width / 2, canvas.height, 10);
-      draw_text_transformed(this.x, this.y - 15, 'temp', 30, 'center');
-      // draw_circle(this.x, this.y, 10, true);
-      draw_alpha = 1;
+      draw_set_font(20, 'Arial');
+      draw_text_transformed(this.x, this.y + 20, 'character', 'center');
+      draw_set_alpha(0.2);
+      draw_circle(this.x, this.y, 50, true);
+      draw_set_alpha(1);
       draw_sprite_ext(this.x, this.y, 'char', 'center', 0.5, 0.5);
     }
 
     adds() {
       this.x += 20;
     }
+    pressed() {
+      this.y += 20;
+    }
   }
 
   sprite_load('img/char.png', 'char');
-  instance_create(temp, 100, 100);
+  let ins = instance_create(temp, 100, 100);
+  set_collider(ins, 50, 50);
 };

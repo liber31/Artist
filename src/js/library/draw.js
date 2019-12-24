@@ -32,17 +32,15 @@ function draw_circle(x, y, r, fill) {
 function draw_text(x, y, text) {
   const ctx = canvas.getContext('2d');
   setDrawMode(ctx);
-  ctx.font = '15px Arial';
   ctx.textAlign = 'left';
   ctx.fillText(text, x, y + 15);
 }
 
-function draw_text_transformed(x, y, text, size, align) {
+function draw_text_transformed(x, y, text, align) {
   const ctx = canvas.getContext('2d');
   setDrawMode(ctx);
-  ctx.font = `${size}px Arial`;
   ctx.textAlign = align;
-  ctx.fillText(text, x, y + size);
+  ctx.fillText(text, x, y + draw_font_size);
 }
 
 function draw_line(x1, y1, x2, y2) {
@@ -94,4 +92,9 @@ function draw_set_alpha(alpha) {
 
 function draw_set_color(color) {
   draw_color = color;
+}
+
+function draw_set_font(size, font) {
+  draw_font_size = size;
+  draw_font = font;
 }
