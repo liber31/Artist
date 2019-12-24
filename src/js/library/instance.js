@@ -40,3 +40,9 @@ function instance_destroy(object_name) {
     }
   }
 }
+
+function instance_create(object, x, y) {
+  let ins = new object();
+  ins.x = x;
+  ins.y = y;
+}

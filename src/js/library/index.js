@@ -15,6 +15,8 @@ let mouse_pressed = false;
 let mouse_click = false;
 let keyboard_check = false;
 let keyboard_code = -1;
+let draw_color = 'black';
+let draw_alpha = 1;
 
 /* -------------------------------------------------------------------------- */
 /*                          화면을 갱신하는 함수를 선언합니다                         */
@@ -51,10 +53,10 @@ async function refreshLoop() {
         }
 
         /* ------------------------------ 계산된 FPS를 그립니다 ----------------------------- */
-        const fpsCounter = canvas.getContext('2d');
-        fpsCounter.font = '15px Arial';
-        fpsCounter.textAlign = 'left';
-        fpsCounter.fillText(fps, 5, 15);
+        const ctx = canvas.getContext('2d');
+        ctx.font = '15px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText(Math.min(60, fps), 5, 15);
 
         /* --------------------------- 특정 변수들을 원래대로 돌려놓습니다 -------------------------- */
         mouse_pressed = false;
@@ -65,6 +67,15 @@ async function refreshLoop() {
   while (true) {
     await loop();
   }
+}
+
+/** ctx를 받고, 현재 캔버스의 설정을 입력합니다 */
+function setDrawMode(ctx) {
+  ctx.restore();
+  ctx.scale(1, 1);
+  ctx.lineWidth = 1;
+  ctx.globalAlpha = draw_alpha;
+  ctx.fillStyle = draw_color;
 }
 
 /* -------------------------------------------------------------------------- */
