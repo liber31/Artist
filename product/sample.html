@@ -49,7 +49,7 @@
           draw_sprite_ext(this.farback, this.y - 50, `farback`, 'left', 2, 2);
           draw_sprite_ext(this.farback + sprite_get_width('farback') * 2, this.y - 50, `farback`, 'left', 2, 2);
           for (let index = 0; index < 30; index++) {
-            draw_sprite_ext(this.snow_floor + sprite_get_width('snow_floor') * index, height - 153, `snow_floor`, 'left', 3, 3);
+            draw_sprite_ext(this.snow_floor + sprite_get_width('snow_floor') * index, this.y + 354, `snow_floor`, 'left', 3, 3);
           }
         }
       }
