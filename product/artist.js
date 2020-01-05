@@ -515,7 +515,13 @@ function room_goto(index) {
     console.log('[Room moved]', room_index);
   }
   canvas = document.getElementById('canvas');
-  setTimeout(() => {
+  function start() {
+    if (canvas === undefined) {
+      setTimeout(() => {
+        start();
+      }, 10);
+      return;
+    }
     canvas.addEventListener('touchstart', function(e) {
       let touch = e.touches[0];
       (real_mouse_x = touch.clientX), (real_mouse_y = touch.clientY);
@@ -530,7 +536,10 @@ function room_goto(index) {
       (real_mouse_x = touch.clientX), (real_mouse_y = touch.clientY);
     });
     room[room_index]();
-  }, 100);
+  }
+  setTimeout(() => {
+    start();
+  }, 10);
 }
 
 refreshLoop();
