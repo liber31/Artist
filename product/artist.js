@@ -516,7 +516,7 @@ function room_goto(index) {
   }
   canvas = document.getElementById('canvas');
   function start() {
-    if (canvas === undefined) {
+    if (canvas === null) {
       setTimeout(() => {
         start();
       }, 10);
