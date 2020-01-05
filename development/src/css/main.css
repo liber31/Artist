@@ -1,0 +1,16 @@
+* {
+  padding: 0 auto;
+  margin: 0 auto;
+}
+
+/* border 제거 */
+body {
+  border: 0;
+  background-color: white;
+}
+
+/* canvas를 viewport 크기로 만들기 */
+canvas {
+  overflow: hidden;
+  position: fixed;
+}

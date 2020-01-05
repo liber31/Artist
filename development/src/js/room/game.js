@@ -1,7 +1,13 @@
 room['game'] = async function() {
+  // set_fullscreen();
   class char extends instance {
     constructor() {
       super();
+    }
+
+    create() {
+      this.goto_x = this.x;
+      this.goto_y = this.y;
     }
 
     step() {
@@ -30,6 +36,12 @@ room['game'] = async function() {
             break;
         }
       }
+      if (mouse_pressed) {
+        this.goto_x = mouse_x;
+        this.goto_y = mouse_y;
+      }
+      this.x += (this.goto_x - this.x) / 12;
+      this.y += (this.goto_y - this.y) / 12;
     }
 
     draw() {
@@ -115,7 +127,7 @@ room['game'] = async function() {
 
   sprite_load('img/char.png', 'char');
   instance_create(board, 0, 0, 1);
-  instance_create(pointer, 0, 0, 4);
+  let point = instance_create(pointer, 0, 0, 4);
   let ins = instance_create(char, 100, 100, 3);
   ins4 = instance_create(sign, 50, 50, 2);
   set_collider(ins4, 50, 50);

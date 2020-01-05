@@ -1,7 +1,7 @@
 /* -------------------------------------------------------------------------- */
 /*                     게임에서 전반적으로 사용되는 값들을 선언합니다                     */
 /* -------------------------------------------------------------------------- */
-let DEBUG = true;
+let DEBUG = false;
 let c_black = 'black';
 let c_green = 'green';
 let c_red = 'red';
@@ -73,11 +73,15 @@ async function request(url, object) {
     http.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
     http.onreadystatechange = function() {
       if (http.readyState == 4 && http.status == 200) {
-        console.log('[HTTP RECV]', http.responseText);
+        if (DEBUG) {
+          console.log('[HTTP RECV]', http.responseText);
+        }
         resolve(JSON.parse(http.responseText));
       }
     };
-    console.log('[HTTP SEND]', JSON.stringify(object));
+    if (DEBUG) {
+      console.log('[HTTP SEND]', JSON.stringify(object));
+    }
     http.send(JSON.stringify(object));
   });
 }
@@ -88,7 +92,9 @@ class instance {
   init(depth) {
     this.alive = true;
     this.id = uuid();
-    console.log('[Created instance]', `${this.constructor.name} (${this.id})`);
+    if (DEBUG) {
+      console.log('[Created instance]', `${this.constructor.name} (${this.id})`);
+    }
 
     if (!instances[depth]) {
       instances[depth] = {};
@@ -110,7 +116,9 @@ class instance {
   /** 객체의 생사 여부를 결정 짓는 함수입니다 */
   destroy() {
     if (this.alive) {
-      console.log('[Deleted instance]', `${this.constructor.name} (${this.id})`);
+      if (DEBUG) {
+        console.log('[Deleted instance]', `${this.constructor.name} (${this.id})`);
+      }
       this.alive = false;
       delete this.x;
       delete this.y;
@@ -138,6 +146,15 @@ class instance {
       }
     }
   }
+
+  /** 인스턴스가 생성되는 첫 순간에 동작합니다 */
+  create() {}
+
+  /** 스텝 이벤트때 동작합니다 */
+  step() {}
+
+  /** 드로우 이벤트때 동작합니다 */
+  draw() {}
 }
 
 /** 해당 이름을 가진 객체를 세계에서 제거합니다 */
@@ -157,6 +174,7 @@ function instance_create(object, x, y, depth) {
   ins.init(depth);
   ins.x = x;
   ins.y = y;
+  ins.create();
   return ins;
 }
 
@@ -311,6 +329,23 @@ function draw_set_font(size, font) {
 /* -------------------------------------------------------------------------- */
 /*                          화면을 갱신하는 함수를 선언합니다                         */
 /* -------------------------------------------------------------------------- */
+/** 게임 화면의 사이즈를 최대로 설정합니다 */
+function set_fullscreen() {
+  let canvas = document.getElementById('canvas');
+  canvas.style.width = '100vw';
+  canvas.style.height = '100vh';
+  // 브라우저에서 canvas가 표시되는 크기 탐색
+  let displayWidth = canvas.clientWidth;
+  let displayHeight = canvas.clientHeight;
+
+  // canvas가 같은 크기가 아닐 때 확인
+  if (canvas.width != displayWidth || canvas.height != displayHeight) {
+    // canvas를 동일한 크기로 수정
+    canvas.width = displayWidth;
+    canvas.height = displayHeight;
+  }
+}
+
 /** 게임의 화면을 갱신하는 함수입니다 */
 async function refreshLoop() {
   async function loop() {
@@ -327,6 +362,7 @@ async function refreshLoop() {
         /* ------------------------------- 그릴 준비를 합니다 ------------------------------- */
         canvas = document.getElementById('canvas');
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
         width = canvas.width;
         height = canvas.height;
         if (view_instance !== undefined) {
@@ -470,9 +506,24 @@ function room_goto(index) {
       }
     }
   }
-  console.log('[Room moved]', room_index);
+  if (DEBUG) {
+    console.log('[Room moved]', room_index);
+  }
   canvas = document.getElementById('canvas');
   setTimeout(() => {
+    canvas.addEventListener('touchstart', function(e) {
+      let touch = e.touches[0];
+      (real_mouse_x = touch.clientX), (real_mouse_y = touch.clientY);
+      mouse_pressed = true;
+      mouse_click = true;
+    });
+    canvas.addEventListener('touchend', function() {
+      mouse_click = false;
+    });
+    canvas.addEventListener('touchmove', function(e) {
+      let touch = e.touches[0];
+      (real_mouse_x = touch.clientX), (real_mouse_y = touch.clientY);
+    });
     room[room_index]();
   }, 10);
 }
