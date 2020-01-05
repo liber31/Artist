@@ -28,6 +28,8 @@ let canvas;
 let mouse_x = 0;
 /** 마우스의 y 좌표입니다 */
 let mouse_y = 0;
+let real_mouse_x = 0;
+let real_mouse_y = 0;
 /** 마우스가 눌러진 첫 순간에 true, 이외는 false를 반환합니다 */
 let mouse_pressed = false;
 /** 마우스가 눌러져 있으면 true, 이외는 false를 반환합니다 */
@@ -42,8 +44,13 @@ let width = 0;
 let height = 0;
 /** 따라갈 인스턴스입니다 */
 let view_instance = undefined;
-let view_padding_width = 0;
-let view_padding_height = 0;
+let view_padding_x = 0;
+let view_padding_y = 0;
+
+/** 따라갈 인스턴스를 설정합니다 */
+function set_view_target_instance(instance) {
+  view_instance = instance;
+}
 
 /** uuid4 를 반환합니다 */
 function uuid() {
@@ -92,6 +99,8 @@ class instance {
 
     this.x = 0;
     this.y = 0;
+    this.xscale = 1;
+    this.yscale = 1;
     this.collider_width = 0;
     this.collider_height = 0;
   }
@@ -160,6 +169,11 @@ function set_collider(ins, width, height) {
 /* -------------------------------------------------------------------------- */
 /** 사각형을 그립니다 */
 function draw_rectangle(x1, y1, x2, y2, fill) {
+  x1 += view_padding_x;
+  y1 += view_padding_y;
+  x2 += view_padding_x;
+  y2 += view_padding_y;
+
   if (!fill) {
     const ctx = canvas.getContext('2d');
     setDrawMode(ctx);
@@ -175,6 +189,8 @@ function draw_rectangle(x1, y1, x2, y2, fill) {
 
 /** 동그라미를 그립니다 */
 function draw_circle(x, y, r, fill) {
+  x += view_padding_x;
+  y += view_padding_y;
   if (!fill) {
     const ctx = canvas.getContext('2d');
     setDrawMode(ctx);
@@ -193,6 +209,8 @@ function draw_circle(x, y, r, fill) {
 
 /** 글자를 그립니다 */
 function draw_text(x, y, text) {
+  x += view_padding_x;
+  y += view_padding_y;
   const ctx = canvas.getContext('2d');
   setDrawMode(ctx);
   ctx.textAlign = 'left';
@@ -201,6 +219,8 @@ function draw_text(x, y, text) {
 
 /** 글자를 해당 정렬 방식에 맞추어 그립니다. align: "left" or "right" or "center" */
 function draw_text_transformed(x, y, text, align) {
+  x += view_padding_x;
+  y += view_padding_y;
   const ctx = canvas.getContext('2d');
   setDrawMode(ctx);
   ctx.textAlign = align;
@@ -209,6 +229,10 @@ function draw_text_transformed(x, y, text, align) {
 
 /** 선을 그립니다 */
 function draw_line(x1, y1, x2, y2) {
+  x1 += view_padding_x;
+  y1 += view_padding_y;
+  x2 += view_padding_x;
+  y2 += view_padding_y;
   const ctx = canvas.getContext('2d');
   setDrawMode(ctx);
   ctx.beginPath();
@@ -219,6 +243,10 @@ function draw_line(x1, y1, x2, y2) {
 
 /** 해당 두께의 선을 그립니다 */
 function draw_line_width(x1, y1, x2, y2, width) {
+  x1 += view_padding_x;
+  y1 += view_padding_y;
+  x2 += view_padding_x;
+  y2 += view_padding_y;
   const ctx = canvas.getContext('2d');
   setDrawMode(ctx);
   ctx.beginPath();
@@ -238,6 +266,8 @@ function sprite_load(dir, sprite_name) {
 
 /** 불러온 이미지를 그립니다 */
 function draw_sprite(x, y, sprite_name) {
+  x += view_padding_x;
+  y += view_padding_y;
   const ctx = canvas.getContext('2d');
   setDrawMode(ctx);
   ctx.drawImage(sprite[sprite_name], x, y, sprite[sprite_name].width, sprite[sprite_name].height);
@@ -245,6 +275,8 @@ function draw_sprite(x, y, sprite_name) {
 
 /** 해당 이미지를 해당 정렬 방식과 사이즈에 맞추어 그립니다 */
 function draw_sprite_ext(x, y, sprite_name, align, xscale, yscale) {
+  x += view_padding_x;
+  y += view_padding_y;
   const ctx = canvas.getContext('2d');
   setDrawMode(ctx);
   if (align == 'center') {
@@ -295,6 +327,19 @@ async function refreshLoop() {
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
         width = canvas.width;
         height = canvas.height;
+        if (view_instance !== undefined) {
+          view_padding_x = -view_instance.x + width / 2;
+          view_padding_y = -view_instance.y + height / 2;
+
+          mouse_x = real_mouse_x + view_instance.x - width / 2;
+          mouse_y = real_mouse_y + view_instance.y - height / 2;
+        } else {
+          view_padding_x = 0;
+          view_padding_y = 0;
+
+          mouse_x = real_mouse_x;
+          mouse_y = real_mouse_y;
+        }
 
         if (!!canvas.getContext) {
           resolve();
@@ -383,21 +428,21 @@ window.addEventListener('mouseenter', onMouseUpdate, false);
 /** 마우스의 위치를 업데이트 해줍니다 */
 function onMouseUpdate(evt) {
   let pos = getMousePos(canvas, evt);
-  mouse_x = pos.x;
-  mouse_y = pos.y;
+  real_mouse_x = pos.x;
+  real_mouse_y = pos.y;
 }
-window.onmousedown = function() {
+window.onmousedown = function(evt) {
   mouse_pressed = true;
   mouse_click = true;
 };
-window.onmouseup = function() {
+window.onmouseup = function(evt) {
   mouse_click = false;
 };
-window.onkeydown = function(e) {
+window.onkeydown = function(evt) {
   keyboard_check = true;
-  keyboard_code = e.which || e.keyCode;
+  keyboard_code = evt.which || evt.keyCode;
 };
-window.onkeyup = function(e) {
+window.onkeyup = function(evt) {
   keyboard_check = false;
   keyboard_code - 1;
 };
@@ -408,6 +453,7 @@ window.onkeyup = function(e) {
 /** 해당 룸으로 이동합니다 */
 function room_goto(index) {
   room_index = index;
+  view_instance = undefined;
   for (let depth in instances) {
     let instances_by_depth = instances[depth];
     for (let object_name in instances_by_depth) {
