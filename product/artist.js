@@ -296,6 +296,13 @@ function sprite_load(dir, sprite_name) {
   sprite[sprite_name] = img;
 }
 
+function sprite_get_width(sprite_name) {
+  return sprite[sprite_name].width;
+}
+function sprite_get_height(sprite_name) {
+  return sprite[sprite_name].height;
+}
+
 /** 불러온 이미지를 그립니다 */
 function draw_sprite(x, y, sprite_name) {
   x += view_padding_x;
