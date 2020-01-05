@@ -49,10 +49,10 @@ let view_padding_y = 0;
 let view_x = 0;
 let view_y = 0;
 
-function leghtdir_x(dist, angle) {
+function lengthdir_x(dist, angle) {
   return dist * Math.cos(angle);
 }
-function leghtdir_y(dist, angle) {
+function lengthdir_y(dist, angle) {
   return dist * -Math.sin(angle);
 }
 
@@ -470,11 +470,13 @@ function setDrawMode(ctx) {
 /* -------------------------------------------------------------------------- */
 /** Get Mouse Position */
 function getMousePos(canvas, evt) {
-  var rect = canvas.getBoundingClientRect();
-  return {
-    x: evt.clientX - rect.left,
-    y: evt.clientY - rect.top
-  };
+  if (canvas !== null) {
+    let rect = canvas.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top
+    };
+  }
 }
 window.addEventListener('mousemove', onMouseUpdate, false);
 window.addEventListener('mouseenter', onMouseUpdate, false);

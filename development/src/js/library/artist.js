@@ -49,6 +49,13 @@ let view_padding_y = 0;
 let view_x = 0;
 let view_y = 0;
 
+function lengthdir_x(dist, angle) {
+  return dist * Math.cos(angle);
+}
+function lengthdir_y(dist, angle) {
+  return dist * -Math.sin(angle);
+}
+
 /** 따라갈 인스턴스를 설정합니다 */
 function set_view_target_instance(instance) {
   view_instance = instance;
@@ -463,11 +470,13 @@ function setDrawMode(ctx) {
 /* -------------------------------------------------------------------------- */
 /** Get Mouse Position */
 function getMousePos(canvas, evt) {
-  var rect = canvas.getBoundingClientRect();
-  return {
-    x: evt.clientX - rect.left,
-    y: evt.clientY - rect.top
-  };
+  if (canvas !== null) {
+    let rect = canvas.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top
+    };
+  }
 }
 window.addEventListener('mousemove', onMouseUpdate, false);
 window.addEventListener('mouseenter', onMouseUpdate, false);
@@ -515,7 +524,13 @@ function room_goto(index) {
     console.log('[Room moved]', room_index);
   }
   canvas = document.getElementById('canvas');
-  setTimeout(() => {
+  function start() {
+    if (canvas === null) {
+      setTimeout(() => {
+        start();
+      }, 10);
+      return;
+    }
     canvas.addEventListener('touchstart', function(e) {
       let touch = e.touches[0];
       (real_mouse_x = touch.clientX), (real_mouse_y = touch.clientY);
@@ -530,7 +545,10 @@ function room_goto(index) {
       (real_mouse_x = touch.clientX), (real_mouse_y = touch.clientY);
     });
     room[room_index]();
-  }, 100);
+  }
+  setTimeout(() => {
+    start();
+  }, 10);
 }
 
 refreshLoop();
