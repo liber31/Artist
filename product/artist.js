@@ -49,6 +49,13 @@ let view_padding_y = 0;
 let view_x = 0;
 let view_y = 0;
 
+function leghtdir_x(dist, angle) {
+  return dist * Math.cos(angle);
+}
+function leghtdir_y(dist, angle) {
+  return dist * -Math.sin(angle);
+}
+
 /** 따라갈 인스턴스를 설정합니다 */
 function set_view_target_instance(instance) {
   view_instance = instance;

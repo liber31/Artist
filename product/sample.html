@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Game</title>
+    <meta charset="UTF-8" />
+    <script type="text/javascript" src="https://liber31.github.io/Artist/product/artist.js"></script>
+  </head>
+
+  <script>
+    room['game'] = function() {
+      DEBUG = true;
+
+      class background extends instance {
+        constructor() {
+          super();
+        }
+
+        step() {
+          this.x += 2;
+          this.y += 1;
+          if (this.y == 70) {
+            this.y = 0;
+            this.x = 0;
+          }
+        }
+
+        draw() {
+          draw_set_color(c_gray);
+          draw_set_font(23, 'Arial');
+          for (let i = 0; i < 7; i++) {
+            for (let j = 0; j < 14; j++) {
+              draw_text_transformed(j * 70 + this.x - 140, this.y + i * 70 - 40, 'ARTIST', 'center', 45);
+            }
+          }
+        }
+      }
+
+      instance_create(background, 0, 0, 1);
+    };
+
+    room_goto('game');
+  </script>
+
+  <body>
+    <canvas id="canvas" width="800" height="360" style="border:1px solid #000000;"> </canvas>
+  </body>
+</html>
