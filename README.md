@@ -7,9 +7,9 @@ Javascript를 기반으로 만들어졌으며 극강의 커스터마이징을 �
 
 ## Examples
 
-- 화면에 text 그리기 - [바로가기](https://liber31.github.io/Artist/product/text.html)
-- 화면에 text를 기울여 그리기 - [바로가기](https://liber31.github.io/Artist/product/wave.html)
-- 전체화면 - [바로가기](https://liber31.github.io/Artist/product/fullscreen.html)
+- 화면에 text 그리기 - [바로가기](https://liber31.github.io/Artist/product/text)
+- 화면에 text를 기울여 그리기 - [바로가기](https://liber31.github.io/Artist/product/wave)
+- 전체화면 - [바로가기](https://liber31.github.io/Artist/product/fullscreen)
 
 ## Support Git History
 
