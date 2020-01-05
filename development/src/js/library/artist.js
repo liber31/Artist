@@ -110,7 +110,7 @@ class instance {
     if (!instances[depth][this.constructor.name]) {
       instances[depth][this.constructor.name] = [];
     }
-    instances[depth][this.constructor.name].push(this);
+    instances[depth][this.constructor.name][this.id] = this;
 
     this.x = 0;
     this.y = 0;
@@ -118,6 +118,7 @@ class instance {
     this.yscale = 1;
     this.collider_width = 0;
     this.collider_height = 0;
+    this.depth = depth;
   }
 
   /** 객체의 생사 여부를 결정 짓는 함수입니다 */
@@ -132,6 +133,7 @@ class instance {
       delete this.id;
       delete this.collider_width;
       delete this.collider_height;
+      delete instances[this.depth][this.constructor.name][this.id];
     }
   }
 
@@ -411,7 +413,7 @@ async function refreshLoop() {
           for (let object_name in instances_by_depth) {
             for (let index in instances_by_depth[object_name]) {
               let _item = instances_by_depth[object_name][index];
-              if (_item.prepare !== undefined) {
+              if (_item.prepare !== undefined && _item.alive === true) {
                 _item.prepare(canvas);
               }
             }
@@ -422,7 +424,7 @@ async function refreshLoop() {
           for (let object_name in instances_by_depth) {
             for (let index in instances_by_depth[object_name]) {
               let _item = instances_by_depth[object_name][index];
-              if (_item.step !== undefined) {
+              if (_item.step !== undefined && _item.alive === true) {
                 _item.step(canvas);
               }
             }
@@ -433,7 +435,7 @@ async function refreshLoop() {
           for (let object_name in instances_by_depth) {
             for (let index in instances_by_depth[object_name]) {
               let _item = instances_by_depth[object_name][index];
-              if (_item.draw !== undefined) {
+              if (_item.draw !== undefined && _item.alive === true) {
                 _item.draw(canvas);
               }
             }
