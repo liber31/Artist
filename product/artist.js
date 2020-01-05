@@ -238,13 +238,18 @@ function draw_text(x, y, text) {
 }
 
 /** 글자를 해당 정렬 방식에 맞추어 그립니다. align: "left" or "right" or "center" */
-function draw_text_transformed(x, y, text, align) {
+function draw_text_transformed(x, y, text, align, angle = 0) {
   x += view_padding_x;
   y += view_padding_y;
   const ctx = canvas.getContext('2d');
   setDrawMode(ctx);
+  ctx.save();
   ctx.textAlign = align;
-  ctx.fillText(text, x, y + draw_font_size);
+  ctx.translate(x, y);
+  ctx.rotate((angle * Math.PI) / 180);
+  ctx.translate(-x, -y);
+  ctx.fillText(text, x, y + draw_font_size / 2);
+  ctx.restore();
 }
 
 /** 선을 그립니다 */
