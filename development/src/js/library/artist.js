@@ -530,7 +530,7 @@ function room_goto(index) {
       (real_mouse_x = touch.clientX), (real_mouse_y = touch.clientY);
     });
     room[room_index]();
-  }, 10);
+  }, 100);
 }
 
 refreshLoop();
