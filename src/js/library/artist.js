@@ -46,6 +46,8 @@ let height = 0;
 let view_instance = undefined;
 let view_padding_x = 0;
 let view_padding_y = 0;
+let view_x = 0;
+let view_y = 0;
 
 /** 따라갈 인스턴스를 설정합니다 */
 function set_view_target_instance(instance) {
@@ -330,12 +332,16 @@ async function refreshLoop() {
         if (view_instance !== undefined) {
           view_padding_x = -view_instance.x + width / 2;
           view_padding_y = -view_instance.y + height / 2;
+          view_x = view_instance.x - width / 2;
+          view_y = view_instance.y - height / 2;
 
           mouse_x = real_mouse_x + view_instance.x - width / 2;
           mouse_y = real_mouse_y + view_instance.y - height / 2;
         } else {
           view_padding_x = 0;
           view_padding_y = 0;
+          view_x = 0;
+          view_y = 0;
 
           mouse_x = real_mouse_x;
           mouse_y = real_mouse_y;
@@ -384,7 +390,7 @@ async function refreshLoop() {
           const ctx = canvas.getContext('2d');
           ctx.font = '15px Arial';
           ctx.textAlign = 'left';
-          ctx.fillStyle = 'black';
+          ctx.fillStyle = 'green';
           ctx.globalAlpha = 1;
           ctx.fillText(Math.min(60, fps), 5, 15);
         }

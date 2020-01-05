@@ -79,8 +79,11 @@ room['game'] = async function() {
     }
 
     draw() {
-      draw_set_color('black');
+      draw_set_alpha(1);
+      draw_set_color(c_black);
+      draw_rectangle(view_x, view_y, view_x + width, view_y + height, true);
       draw_set_alpha(0.5);
+      draw_set_color(c_white);
       draw_rectangle(0, 0, width, height, true);
       draw_set_alpha(1);
     }
@@ -101,10 +104,12 @@ room['game'] = async function() {
         this.xscale = 1;
       }
       draw_set_color('black');
-      draw_set_font(15, 'Arial');
-      draw_text_transformed(this.x, this.y + 24, 'POINTER', 'center');
       draw_set_alpha(1);
-      draw_sprite_ext(this.x, this.y, 'char', 'center', this.xscale * 0.5, 0.5);
+      draw_sprite_ext(this.x, this.y, 'char', 'center', this.xscale * 2, 2);
+      draw_set_font(15, 'Arial');
+      draw_set_color(c_white);
+      draw_text_transformed(this.x, this.y + 24, 'POINTER', 'center');
+      draw_set_color('black');
     }
   }
 
