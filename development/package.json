@@ -1,24 +1,23 @@
 {
-  "name": "simplehomepage",
-  "version": "1.0.0",
-  "description": "자기소개용으로 사용하기 적절한 초 소규모 홈페이지 입니다",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/liber31/SimpleHomepage.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/liber31/SimpleHomepage/issues"
-  },
-  "homepage": "https://github.com/liber31/SimpleHomepage#readme",
-  "dependencies": {
-    "express": "^4.17.1",
-    "opn": "^6.0.0",
-    "urldecode": "^1.0.1"
-  }
+    "name": "render_server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^8.2.0",
+        "ejs": "^3.0.1",
+        "express": "^4.17.1",
+        "nodemon": "^2.0.2",
+        "opn": "^6.0.0",
+        "path": "^0.12.7",
+        "socket.io-client": "^2.3.0"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon -e html,js app.js"
+    },
+    "author": "",
+    "license": "ISC"
 }
