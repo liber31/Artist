@@ -456,13 +456,13 @@ function onMouseUpdate(evt) {
 window.addEventListener('mousemove', onMouseUpdate, false);
 window.addEventListener('mouseenter', onMouseUpdate, false);
 window.onmousedown = function (_evt) {
-    if (window.variables.mouse_x <= window.variables.width && window.variables.mouse_y <= window.variables.height) {
+    if (window.variables.mouse_x >= 0 && window.variables.mouse_y >= 0 && window.variables.mouse_x <= window.variables.width && window.variables.mouse_y <= window.variables.height) {
         window.variables.mouse_pressed = true;
         window.variables.mouse_click = true;
     }
 };
 window.onmouseup = function (_evt) {
-    if (window.variables.mouse_x <= window.variables.width && window.variables.mouse_y <= window.variables.height) {
+    if (window.variables.mouse_x >= 0 && window.variables.mouse_y >= 0 && window.variables.mouse_x <= window.variables.width && window.variables.mouse_y <= window.variables.height) {
         window.variables.mouse_click = false;
     }
 };
