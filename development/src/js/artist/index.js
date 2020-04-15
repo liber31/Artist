@@ -449,11 +449,15 @@ function onMouseUpdate(evt) {
 window.addEventListener('mousemove', onMouseUpdate, false);
 window.addEventListener('mouseenter', onMouseUpdate, false);
 window.onmousedown = function (_evt) {
-    window.variables.mouse_pressed = true;
-    window.variables.mouse_click = true;
+    if (window.variables.mouse_x <= window.variables.width && window.variables.mouse_y <= window.variables.height) {
+        window.variables.mouse_pressed = true;
+        window.variables.mouse_click = true;
+    }
 };
 window.onmouseup = function (_evt) {
-    window.variables.mouse_click = false;
+    if (window.variables.mouse_x <= window.variables.width && window.variables.mouse_y <= window.variables.height) {
+        window.variables.mouse_click = false;
+    }
 };
 window.onkeydown = function (evt) {
     window.variables.keyboard_check = true;
