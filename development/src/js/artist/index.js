@@ -271,19 +271,19 @@ function setDrawMode(ctx) {
 
 /** 게임 화면의 사이즈를 최대로 설정합니다 */
 export function set_fullscreen() {
-    const canvas = document.getElementById('canvas');
-    canvas.style.width = '100vw';
-    canvas.style.height = '100vh';
-    // 브라우저에서 canvas가 표시되는 크기 탐색
-    const displayWidth = canvas.clientWidth;
-    const displayHeight = canvas.clientHeight;
+  const canvas = document.getElementById('canvas');
+  canvas.style.width = '100vw';
+  canvas.style.height = '100vh';
+  // 브라우저에서 canvas가 표시되는 크기 탐색
+  const displayWidth = canvas.clientWidth;
+  const displayHeight = canvas.clientHeight;
 
-    // canvas가 같은 크기가 아닐 때 확인
-    if (canvas.width != displayWidth || canvas.height != displayHeight) {
-        // canvas를 동일한 크기로 수정
-        canvas.width = displayWidth;
-        canvas.height = displayHeight;
-    }
+  // canvas가 같은 크기가 아닐 때 확인
+  if (canvas.width != displayWidth || canvas.height != displayHeight) {
+      // canvas를 동일한 크기로 수정
+      canvas.width = displayWidth;
+      canvas.height = displayHeight;
+  }
 }
 
 export async function drawingStart() {
