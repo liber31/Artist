@@ -44,7 +44,7 @@ export class ArtistElement {
         this.depth = depth;        
     }
 
-    /** 객체의 생사 여부를 결정 짓는 함수입니다 */
+    /** 객체의 생사 여부를 결정 짓는 함수입니다 */        
     async destroyProcess() {
         if (this.alive === true) {
             if (window.variables.debug_mode == true) {
@@ -97,6 +97,10 @@ export class ArtistElement {
 
 /** 해당 이름을 가진 객체를 세계에서 제거합니다 */
 export function instance_destroy(object_name) {
+  if (typeof object_name === 'object' && object_name.destroyProcess !== undefined) {
+    object_name.destroyProcess();
+  }
+  
     for (let depth in window.variables.instances) {
         for (let object in window.variables.instances[depth][object_name]) {
             let _item = window.variables.instances[depth][object_name][object];

@@ -18,3 +18,13 @@ export function point_direction(x1, y1, x2, y2) {
   }
   return 360 - degree;
 }
+
+export function random_range(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+export function irandom_range(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
