@@ -55,7 +55,7 @@ export function draw_text_transformed(x, y, text, align, angle = 0) {
     ctx.save();
     ctx.textAlign = align;
     ctx.translate(x, y);
-    ctx.rotate((angle * Math.PI) / 180);
+    ctx.rotate((-angle * Math.PI) / 180);
     ctx.translate(-x, -y);
     ctx.fillText(text, x, y + window.variables.draw_font_size / 2);
     ctx.restore();
@@ -105,9 +105,12 @@ export function draw_sprite(x, y, sprite_name) {
 }
 
 /** 해당 이미지를 해당 정렬 방식과 사이즈에 맞추어 그립니다 */
-export function draw_sprite_ext(x, y, sprite_name, align, xscale, yscale) {
+export function draw_sprite_ext(x, y, sprite_name, align, xscale, yscale, angle) {
     const ctx = window.variables.canvas.getContext('2d');
     setDrawMode(ctx);
+    ctx.translate(x, y);
+    ctx.rotate((-angle * Math.PI) / 180);
+    ctx.translate(-x, -y);
     if (align == 'center') {
         x += xscale < 0 ? (window.variables.sprite[sprite_name].width * xscale) / 2 : -(window.variables.sprite[sprite_name].width * xscale) / 2;
         y += yscale < 0 ? (window.variables.sprite[sprite_name].height * yscale) / 2 : -(window.variables.sprite[sprite_name].height * yscale) / 2;
@@ -121,7 +124,7 @@ export function draw_sprite_ext(x, y, sprite_name, align, xscale, yscale) {
 
 /** 드로우 모드의 투명도를 설정합니다 */
 export function draw_set_alpha(alpha) {
-    window.variables.draw_alpha = alpha;
+    window.variables.draw_alpha = Math.min(1, alpha);
 }
 
 /** 드로우 모드의 색을 설정합니다 */

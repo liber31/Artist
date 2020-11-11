@@ -145,10 +145,6 @@ export async function start() {
   
                 // 뒷 배경을 흰색으로 강제 초기화
                 window.variables.canvas.getContext('2d').clearRect(0, 0, window.variables.canvas.width, window.variables.canvas.height);
-  
-                // 가변 display ratio
-                window.variables.display_width = window.variables.canvas.width;
-                window.variables.display_height = window.variables.canvas.height;
 
                 window.variables.mouse_x = window.variables.display_mouse_x;
                 window.variables.mouse_y = window.variables.display_mouse_y;
