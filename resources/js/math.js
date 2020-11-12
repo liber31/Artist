@@ -78,7 +78,7 @@ export function ease_out_quartic(value) {
 }
 
 export function ease_in_out_quartic(value) {
-  let t = argument0 * 2;
+  let t = value * 2;
   
   if (t < 1) {
     return 0.5 * t * t * t * t;
@@ -98,7 +98,7 @@ export function ease_out_quintic(value) {
 }
 
 export function ease_in_out_quintic(value) {
-  let t = argument0 * 2;
+  let t = value * 2;
   
   if (t < 1) {
     return 0.5 * t * t * t * t * t;
@@ -109,15 +109,15 @@ export function ease_in_out_quintic(value) {
 }
 
 export function ease_in_sine(value) {
-  return -cos(value * Math.PI / 2) + 1;
+  return -Math.cos(value * Math.PI / 2) + 1;
 }
 
 export function ease_out_sine(value) {
-  return sin(value * Math.PI / 2);
+  return Math.sin(value * Math.PI / 2);
 }
 
 export function ease_in_out_sine(value) {
-  return -0.5 * (cos(value * Math.PI) - 1);
+  return -0.5 * (Math.cos(value * Math.PI) - 1);
 }
 
 export function ease_in_expo(value) {
@@ -151,9 +151,9 @@ export function ease_in_out_expo(value) {
 }
 
 export function ease_in_circ(value) {
-  if (argument0 <= 0) {
+  if (value <= 0) {
     return 0;
-  } else if (argument0 >= 1) {
+  } else if (value >= 1) {
     return 1;
   }
   return -(Math.sqrt(1 - value * value) - 1);
