@@ -152,11 +152,18 @@ export async function start() {
 
                 window.variables.mouse_x = window.variables.display_mouse_x;
                 window.variables.mouse_y = window.variables.display_mouse_y;
-
+               
+                let ratio = 1;
                 if (window.variables.fullscreen === true) {
                   window.variables.mouse_x *= 2;
                   window.variables.mouse_y *= 2;
+                  ratio = 2;
                 }
+                
+                window.variables.canvas.width = window.variables.canvas.clientWidth * ratio;
+                window.variables.canvas.height = window.variables.canvas.clientHeight * ratio;
+                window.variables.display_width = window.variables.canvas.width;
+                window.variables.display_height = window.variables.canvas.height;
 
                 for (let depth in window.variables.instances) {
                     let instances_by_depth = window.variables.instances[depth];
