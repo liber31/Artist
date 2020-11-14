@@ -1,3 +1,4 @@
+//#CodeStart
 /** 해당 url로 post request를 보냅니다. */
 export async function request(url, object) {
     return new Promise((resolve, _reject) => {

@@ -9,7 +9,7 @@ const canvas = document.getElementById('canvas');
 try {
 set_canvas(canvas);
 set_fullscreen(true);
-set_debug_mode(false);
+set_debug_mode(true);
 
 start();
 

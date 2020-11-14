@@ -1,3 +1,4 @@
+//#CodeStart 
 window.variables = {
     canvas: undefined,
     

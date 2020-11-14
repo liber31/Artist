@@ -1,3 +1,4 @@
+//#CodeStart
 /** Get Mouse Position */
 function getMousePos(canvas, evt) {
     if (canvas !== null) {

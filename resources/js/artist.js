@@ -1,6 +1,8 @@
 import './config.js';
 import { mobile_io_start } from './io.js';
 
+//#CodeStart
+
 export function set_canvas(canvas) {
   window.variables.canvas = canvas;
 }
@@ -23,7 +25,7 @@ export class ArtistElement {
         this.alive = true;
         this.id = uuid();
         if (window.variables.debug_mode == true) {
-          alert(`Instance created ${this.constructor.name} (${this.id})`);
+//          alert(`Instance created ${this.constructor.name} (${this.id})`);
         }
 
         if (!window.variables.instances[depth]) {
@@ -48,7 +50,7 @@ export class ArtistElement {
     async destroyProcess() {
         if (this.alive === true) {
             if (window.variables.debug_mode == true) {
-              alert(`Instance destroyed ${this.constructor.name} (${this.id})`);
+//              alert(`Instance destroyed ${this.constructor.name} (${this.id})`);
             }
             
             if (this.destroy !== undefined) {

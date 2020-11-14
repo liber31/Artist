@@ -1,3 +1,4 @@
+//#CodeStart
 export const color = {
     black: 'black',
     green: 'green',

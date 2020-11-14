@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "export": "node export.js"
   }
 }

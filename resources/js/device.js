@@ -1,3 +1,4 @@
+//#CodeStart
 export function set_fullscreen(triggerBool) {
   if (triggerBool === false) {
     const displayWidth = window.variables.canvas.clientWidth;
