@@ -1,13 +1,16 @@
-alert('hi')
+// -- -- -- -- -- -- -- -- -- -- -- --
+// "Artist.js" 2D Graphic Framework
+// -- -- -- -- -- -- -- -- -- -- -- --
+
 function set_canvas(canvas) {
   window.variables.canvas = canvas;
 }
 
-export function set_debug_mode(triggerBool) {
+function set_debug_mode(triggerBool) {
   window.variables.debug_mode = triggerBool;
 }
 
-export function uuid() {
+function uuid() {
     // UUID v4 generator in JavaScript (RFC4122 compliant)
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = (Math.random() * 16) | 0,
@@ -16,7 +19,7 @@ export function uuid() {
     });
 }
 
-export class ArtistElement {
+class ArtistElement {
     constructor(depth, x, y) {
         this.alive = true;
         this.id = uuid();
@@ -94,7 +97,7 @@ export class ArtistElement {
 }
 
 /** 해당 이름을 가진 객체를 세계에서 제거합니다 */
-export function instance_destroy(object_name) {
+function instance_destroy(object_name) {
   if (typeof object_name === 'object' && object_name.destroyProcess !== undefined) {
     object_name.destroyProcess();
   }
@@ -108,7 +111,7 @@ export function instance_destroy(object_name) {
     }
 }
 
-export function instance_create(object, x, y, depth) {
+function instance_create(object, x, y, depth) {
   if (depth === 0) {
     alert('can not make instance at depth 0');    
     return;
@@ -125,7 +128,7 @@ export function instance_create(object, x, y, depth) {
   return ins;
 }
 
-export async function start() {
+async function start() {
     if (window.variables.debug_mode == true) {
       console.log('debug mode enabled');
     }
@@ -256,7 +259,7 @@ window.variables = {
 };
 
 
-export function set_fullscreen(triggerBool) {
+function set_fullscreen(triggerBool) {
   if (triggerBool === false) {
     const displayWidth = window.variables.canvas.clientWidth;
     const displayHeight = window.variables.canvas.clientHeight;
@@ -281,7 +284,7 @@ export function set_fullscreen(triggerBool) {
   window.variables.fullscreen = true;
 }
 
-export const color = {
+const color = {
     black: 'black',
     green: 'green',
     red: 'red',
@@ -291,7 +294,7 @@ export const color = {
 };
 
 /** 사각형을 그립니다 */
-export function draw_rectangle(x1, y1, x2, y2, fill) {
+function draw_rectangle(x1, y1, x2, y2, fill) {
     if (!fill) {
         const ctx = window.variables.canvas.getContext('2d');
         setDrawMode(ctx);
@@ -306,7 +309,7 @@ export function draw_rectangle(x1, y1, x2, y2, fill) {
 }
 
 /** 동그라미를 그립니다 */
-export function draw_circle(x, y, r, fill) {
+function draw_circle(x, y, r, fill) {
     if (!fill) {
         const ctx = window.variables.canvas.getContext('2d');
         setDrawMode(ctx);
@@ -324,7 +327,7 @@ export function draw_circle(x, y, r, fill) {
 }
 
 /** 글자를 그립니다 */
-export function draw_text(x, y, text) {
+function draw_text(x, y, text) {
     const ctx = window.variables.canvas.getContext('2d');
     setDrawMode(ctx);
     ctx.textAlign = 'left';
@@ -332,7 +335,7 @@ export function draw_text(x, y, text) {
 }
 
 /** 글자를 해당 정렬 방식에 맞추어 그립니다. align: "left" or "right" or "center" */
-export function draw_text_transformed(x, y, text, align, angle = 0) {
+function draw_text_transformed(x, y, text, align, angle = 0) {
     const ctx = window.variables.canvas.getContext('2d');
     setDrawMode(ctx);
     ctx.save();
@@ -345,7 +348,7 @@ export function draw_text_transformed(x, y, text, align, angle = 0) {
 }
 
 /** 선을 그립니다 */
-export function draw_line(x1, y1, x2, y2) {
+function draw_line(x1, y1, x2, y2) {
     const ctx = window.variables.canvas.getContext('2d');
     setDrawMode(ctx);
     ctx.beginPath();
@@ -355,7 +358,7 @@ export function draw_line(x1, y1, x2, y2) {
 }
 
 /** 해당 두께의 선을 그립니다 */
-export function draw_line_width(x1, y1, x2, y2, width) {
+function draw_line_width(x1, y1, x2, y2, width) {
     const ctx = window.variables.canvas.getContext('2d');
     setDrawMode(ctx);
     ctx.beginPath();
@@ -366,29 +369,29 @@ export function draw_line_width(x1, y1, x2, y2, width) {
 }
 
 /** 이미지를 불러옵니다 */
-export function sprite_load(dir, sprite_name) {
+function sprite_load(dir, sprite_name) {
     let img = new Image();
     img.src = dir;
 
     window.variables.sprite[sprite_name] = img;
 }
 
-export function sprite_get_width(sprite_name) {
+function sprite_get_width(sprite_name) {
     return window.variables.sprite[sprite_name].width;
 }
-export function sprite_get_height(sprite_name) {
+function sprite_get_height(sprite_name) {
     return window.variables.sprite[sprite_name].height;
 }
 
 /** 불러온 이미지를 그립니다 */
-export function draw_sprite(x, y, sprite_name) {
+function draw_sprite(x, y, sprite_name) {
     const ctx = window.variables.canvas.getContext('2d');
     setDrawMode(ctx);
     ctx.drawImage(window.variables.sprite[sprite_name], x, y, window.variables.sprite[sprite_name].width, window.variables.sprite[sprite_name].height);
 }
 
 /** 해당 이미지를 해당 정렬 방식과 사이즈에 맞추어 그립니다 */
-export function draw_sprite_ext(x, y, sprite_name, align, xscale, yscale, angle) {
+function draw_sprite_ext(x, y, sprite_name, align, xscale, yscale, angle) {
     const ctx = window.variables.canvas.getContext('2d');
     setDrawMode(ctx);
     ctx.translate(x, y);
@@ -406,17 +409,17 @@ export function draw_sprite_ext(x, y, sprite_name, align, xscale, yscale, angle)
 }
 
 /** 드로우 모드의 투명도를 설정합니다 */
-export function draw_set_alpha(alpha) {
+function draw_set_alpha(alpha) {
     window.variables.draw_alpha = Math.min(1, alpha);
 }
 
 /** 드로우 모드의 색을 설정합니다 */
-export function draw_set_color(color) {
+function draw_set_color(color) {
     window.variables.draw_color = color;
 }
 
 /** 드로우 모드의 폰트를 설정합니다 */
-export function draw_set_font(size, font) {
+function draw_set_font(size, font) {
     window.variables.draw_font_size = size;
     window.variables.draw_font = font;
 }
@@ -472,7 +475,7 @@ window.onkeyup = function (_evt) {
     window.variables.keyboard_code - 1;
 };
 
-export function mobile_io_start() {
+function mobile_io_start() {
   window.variables.canvas.addEventListener('touchstart', (e) => {
     let touch = e.touches[0];
     window.variables.display_mouse_x = touch.clientX;
@@ -490,19 +493,19 @@ export function mobile_io_start() {
   });
 }
  
-export function lengthdir_x(dist, angle) {
+function lengthdir_x(dist, angle) {
     return dist * Math.cos(angle * (Math.PI / 180));
 }
 
-export function lengthdir_y(dist, angle) {
+function lengthdir_y(dist, angle) {
     return dist * -Math.sin(angle * (Math.PI / 180));
 }
 
-export function point_distance(x1, y1, x2, y2) {
+function point_distance(x1, y1, x2, y2) {
   return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 
-export function point_direction(x1, y1, x2, y2) {
+function point_direction(x1, y1, x2, y2) {
   let rad = Math.atan2(y2 - y1, x2 - x1);
   let degree = (rad * 180) / Math.PI;
   if (degree < 0) {
@@ -511,25 +514,25 @@ export function point_direction(x1, y1, x2, y2) {
   return 360 - degree;
 }
 
-export function random_range(min, max) {
+function random_range(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-export function irandom_range(min, max) {
+function irandom_range(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-export function ease_in_quad(value) {
+function ease_in_quad(value) {
   return value * value;
 }
 
-export function ease_out_quad(value) {
+function ease_out_quad(value) {
   return -value * (value - 2);
 }
 
-export function ease_in_out_quad(value) {
+function ease_in_out_quad(value) {
   let t = value * 2;
 
   if (t < 1) {
@@ -540,16 +543,16 @@ export function ease_in_out_quad(value) {
   return -0.5 * (t * (t - 2) - 1);
 }
 
-export function ease_in_cubic(value) {
+function ease_in_cubic(value) {
   return value * value * value;
 }
 
-export function ease_out_cubic(value) {
+function ease_out_cubic(value) {
   let t = value - 1;
   return t * t * t + 1;
 }
 
-export function ease_in_out_cubic(value) {
+function ease_in_out_cubic(value) {
   let t = value * 2;
   
   if (t < 1) {
@@ -560,16 +563,16 @@ export function ease_in_out_cubic(value) {
   return 0.5 * (t * t * t + 2);
 }
 
-export function ease_in_quartic(value) {
+function ease_in_quartic(value) {
   return value * value * value * value;
 }
 
-export function ease_out_quartic(value) {
+function ease_out_quartic(value) {
   let t = value - 1;
   return -(t * t * t * t - 1);
 }
 
-export function ease_in_out_quartic(value) {
+function ease_in_out_quartic(value) {
   let t = value * 2;
   
   if (t < 1) {
@@ -580,16 +583,16 @@ export function ease_in_out_quartic(value) {
   return -0.5 * (t * t * t * t - 2);
 }
 
-export function ease_in_quintic(value) {
+function ease_in_quintic(value) {
   return value * value * value * value * value;
 }
 
-export function ease_out_quintic(value) {
+function ease_out_quintic(value) {
   let t = value - 1;
   return t * t * t * t * t + 1;
 }
 
-export function ease_in_out_quintic(value) {
+function ease_in_out_quintic(value) {
   let t = value * 2;
   
   if (t < 1) {
@@ -600,33 +603,33 @@ export function ease_in_out_quintic(value) {
   return 0.5 * (t * t * t * t * t + 2);
 }
 
-export function ease_in_sine(value) {
+function ease_in_sine(value) {
   return -Math.cos(value * Math.PI / 2) + 1;
 }
 
-export function ease_out_sine(value) {
+function ease_out_sine(value) {
   return Math.sin(value * Math.PI / 2);
 }
 
-export function ease_in_out_sine(value) {
+function ease_in_out_sine(value) {
   return -0.5 * (Math.cos(value * Math.PI) - 1);
 }
 
-export function ease_in_expo(value) {
+function ease_in_expo(value) {
   if (value === 0) {
     return 0;
   }
   return Math.pow(2, 10 * (value - 1));
 }
 
-export function ease_out_expo(value) {
+function ease_out_expo(value) {
   if (value === 1) {
     return 1;
   }
   return -Math.pow(2, -10 * value) + 1;
 }
 
-export function ease_in_out_expo(value) {
+function ease_in_out_expo(value) {
   if (value === 0) {
     return 0;
   } else if (value === 1) {
@@ -642,7 +645,7 @@ export function ease_in_out_expo(value) {
   return 0.5 * (-Math.pow(2, -10 * (t - 1)) + 2);
 }
 
-export function ease_in_circ(value) {
+function ease_in_circ(value) {
   if (value <= 0) {
     return 0;
   } else if (value >= 1) {
@@ -651,7 +654,7 @@ export function ease_in_circ(value) {
   return -(Math.sqrt(1 - value * value) - 1);
 }
 
-export function ease_out_circ(value) {
+function ease_out_circ(value) {
   if (value <= 0) {
     return 0;
   } else if (value >= 1) {
@@ -662,7 +665,7 @@ export function ease_out_circ(value) {
   return Math.sqrt(1 - t * t);
 }
 
-export function ease_in_out_circ(value) {
+function ease_in_out_circ(value) {
   if (value <= 0) {
     return 0;
   } else if (value >= 1) {
@@ -679,7 +682,7 @@ export function ease_in_out_circ(value) {
   return 0.5 * (Math.sqrt(1 - t * t) + 1);
 }
 
-export function ease_in_elastic(value) {
+function ease_in_elastic(value) {
   if (value === 0) {
     return 0;
   } else if (value === 1) {
@@ -691,7 +694,7 @@ export function ease_in_elastic(value) {
   return -(Math.pow(2, 10 * t)) * Math.sin((t - s) * (2 * Math.PI) / p);
 }
 
-export function ease_out_elastic(value) {
+function ease_out_elastic(value) {
   if (value === 0) {
     return 0;
   } else if (value === 1) {
@@ -703,7 +706,7 @@ export function ease_out_elastic(value) {
   return Math.pow(2, -10 * value) * Math.sin((value - s) * (2 * Math.PI) / p) + 1;
 }
 
-export function ease_in_out_elastic(value) {
+function ease_in_out_elastic(value) {
   if (value === 0) {
     return 0;
   } else if (value === 1) {
@@ -721,18 +724,18 @@ export function ease_in_out_elastic(value) {
   return Math.pow(2, -10 * t) * Math.sin((t - s) * (2 * Math.PI) / p) * 0.5 + 1;
 }
 
-export function ease_in_back(value) {
+function ease_in_back(value) {
   let s = 1.70158;
   return value * value * ((s + 1) * value - s);
 }
 
-export function ease_out_back(value) {
+function ease_out_back(value) {
   let s = 1.70158;
   let t = value - 1;
   return t * t * ((s + 1) * t + s) + 1;
 }
 
-export function ease_in_out_back(value) {
+function ease_in_out_back(value) {
   let s = 1.70158;
   let t = value * 2;
   s *= 1.525;
@@ -744,11 +747,11 @@ export function ease_in_out_back(value) {
   return 0.5 * (t * t * ((s + 1) * t + s) + 2);
 }
 
-export function ease_in_bounce(value) {
+function ease_in_bounce(value) {
   return 1 - ease_out_bounce(1 - value);
 }
 
-export function ease_out_bounce(value) {
+function ease_out_bounce(value) {
   let t = value;
   if (t < 1 / 2.75) {
     return 7.5625 * t * t;
@@ -764,7 +767,7 @@ export function ease_out_bounce(value) {
   }
 }
 
-export function ease_in_out_bounce(value) {
+function ease_in_out_bounce(value) {
   if (value < 0.5) {
     return 0.5 - ease_out_bounce(1 - value * 2) * 0.5;
   } else {
@@ -773,7 +776,7 @@ export function ease_in_out_bounce(value) {
 }
 
 /** 해당 url로 post request를 보냅니다. */
-export async function request(url, object) {
+async function request(url, object) {
     return new Promise((resolve, _reject) => {
         let http = new XMLHttpRequest();
         http.open('POST', url, true);

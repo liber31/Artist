@@ -2,7 +2,6 @@ import './config.js';
 import { mobile_io_start } from './io.js';
 
 //#CodeStart
-
 export function set_canvas(canvas) {
   window.variables.canvas = canvas;
 }
