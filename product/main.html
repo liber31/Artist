@@ -41,11 +41,11 @@
     
     <script>
     const canvas = document.getElementById('canvas');
-    
+    alert('start')
     try {
       set_canvas(canvas);
       set_fullscreen(true);
-      set_debug_mode(false);
+      set_debug_mode(true);
       
       start();
       
@@ -62,5 +62,6 @@
     } catch(err) {
       alert(err);
     }
+        alert('end')
     </script>
 </html>
