@@ -1,3 +1,4 @@
+alert('hi')
 function set_canvas(canvas) {
   window.variables.canvas = canvas;
 }
