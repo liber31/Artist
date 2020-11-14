@@ -1,5 +1,5 @@
 import './config.js';
-import { mobile_io_start } from './io.js';
+import { mobile_io_start, pc_io_start } from './io.js';
 
 //#CodeStart
 export function set_canvas(canvas) {
@@ -134,6 +134,7 @@ export async function start() {
     }
     
     mobile_io_start();
+    pc_io_start();
 
     async function loop() {      
         return new Promise(

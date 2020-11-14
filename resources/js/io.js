@@ -17,28 +17,6 @@ function onMouseUpdate(evt) {
     window.variables.display_mouse_y = pos.y;
 }
 
-window.addEventListener('mousemove', onMouseUpdate, false);
-window.addEventListener('mouseenter', onMouseUpdate, false);
-window.onmousedown = function (_evt) {
-    if (window.variables.mouse_x >= 0 && window.variables.mouse_y >= 0 && window.variables.mouse_x <= window.variables.width && window.variables.mouse_y <= window.variables.height) {
-        window.variables.mouse_pressed = true;
-        window.variables.mouse_click = true;
-    }
-};
-window.onmouseup = function (_evt) {
-    if (window.variables.mouse_x >= 0 && window.variables.mouse_y >= 0 && window.variables.mouse_x <= window.variables.width && window.variables.mouse_y <= window.variables.height) {
-        window.variables.mouse_click = false;
-    }
-};
-window.onkeydown = function (evt) {
-    window.variables.keyboard_check = true;
-    window.variables.keyboard_code = evt.which || evt.keyCode;
-};
-window.onkeyup = function (_evt) {
-    window.variables.keyboard_check = false;
-    window.variables.keyboard_code - 1;
-};
-
 export function mobile_io_start() {
   window.variables.canvas.addEventListener('touchstart', (e) => {
     let touch = e.touches[0];
@@ -55,4 +33,28 @@ export function mobile_io_start() {
     window.variables.display_mouse_x = touch.clientX;
     window.variables.display_mouse_y = touch.clientY;
   });
+}
+
+export function pc_io_start() {
+  window.addEventListener('mousemove', onMouseUpdate, false);
+  window.addEventListener('mouseenter', onMouseUpdate, false);
+  window.onmousedown = function (_evt) {
+      if (window.variables.mouse_x >= 0 && window.variables.mouse_y >= 0 && window.variables.mouse_x <= window.variables.width && window.variables.mouse_y <= window.variables.height) {
+          window.variables.mouse_pressed = true;
+          window.variables.mouse_click = true;
+      }
+  };
+  window.onmouseup = function (_evt) {
+      if (window.variables.mouse_x >= 0 && window.variables.mouse_y >= 0 && window.variables.mouse_x <= window.variables.width && window.variables.mouse_y <= window.variables.height) {
+          window.variables.mouse_click = false;
+      }
+  };
+  window.onkeydown = function (evt) {
+      window.variables.keyboard_check = true;
+      window.variables.keyboard_code = evt.which || evt.keyCode;
+  };
+  window.onkeyup = function (_evt) {
+      window.variables.keyboard_check = false;
+      window.variables.keyboard_code - 1;
+  };
 }
