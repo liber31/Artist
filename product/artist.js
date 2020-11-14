@@ -1,4 +1,6 @@
-function set_canvas(canvas) {
+
+
+export function set_canvas(canvas) {
   window.variables.canvas = canvas;
 }
 
