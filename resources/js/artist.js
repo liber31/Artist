@@ -1,226 +1,153 @@
-import './config.js';
-import { mobile_io_start, pc_io_start } from './io.js';
-
 //#CodeStart
-export function set_canvas(canvas) {
-  window.variables.canvas = canvas;
-}
-
-export function set_debug_mode(triggerBool) {
-  window.variables.debug_mode = triggerBool;
-}
-
-export function uuid() {
-    // UUID v4 generator in JavaScript (RFC4122 compliant)
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (Math.random() * 16) | 0,
-            v = c == 'x' ? r : (r & 3) | 8;
-        return v.toString(16);
+class ArtistEngine {
+  constructor() {
+    this.renderer = new PIXI.Renderer({
+      resolution: devicePixelRatio,
+      backgroundColor: 0x000000
     });
-}
-
-export class ArtistElement {
-    constructor(depth, x, y) {
-        this.alive = true;
-        this.id = uuid();
-        if (window.variables.debug_mode == true) {
-//          alert(`Instance created ${this.constructor.name} (${this.id})`);
-        }
-
-        if (!window.variables.instances[depth]) {
-            window.variables.instances[depth] = {};
-        }
-
-        if (!window.variables.instances[depth][this.constructor.name]) {
-            window.variables.instances[depth][this.constructor.name] = [];
-        }
-        window.variables.instances[depth][this.constructor.name][this.id] = this;
-
-        this.x = x;
-        this.y = y;
-        this.xscale = 1;
-        this.yscale = 1;
-        this.collider_width = 0;
-        this.collider_height = 0;
-        this.depth = depth;        
-    }
-
-    /** 객체의 생사 여부를 결정 짓는 함수입니다 */        
-    async destroyProcess() {
-        if (this.alive === true) {
-            if (window.variables.debug_mode == true) {
-//              alert(`Instance destroyed ${this.constructor.name} (${this.id})`);
-            }
-            
-            if (this.destroy !== undefined) {
-              await this.destroy();
-            }
-
-            this.alive = false;
-            delete this.x;
-            delete this.y;
-            delete this.id;
-            delete this.collider_width;
-            delete this.collider_height;
-            delete window.variables.instances[this.depth][this.constructor.name][this.id];
-        }
-    }
-
-    async prepare() {
-        if (this.collider_width !== 0 && this.collider_height !== 0) {
-            if (
-                window.variables.mouse_x >= this.x - this.collider_width / 2 &&
-                window.variables.mouse_x <= this.x + this.collider_width / 2 &&
-                window.variables.mouse_y >= this.y - this.collider_height / 2 &&
-                window.variables.mouse_y <= this.y + this.collider_height / 2
-            ) {
-                if (window.variables.mouse_pressed && this.pressed_me !== undefined) {
-                    await this.pressed_me();
-                }
-                if (window.variables.mouse_click && this.click_me !== undefined) {
-                    await this.click_me();
-                }
-            }
-        }
-        
-        if (window.variables.mouse_pressed && this.pressed_global !== undefined) {
-            await this.pressed_global();
-        }
-        if (window.variables.mouse_click && this.click_global !== undefined) {
-            await this.click_global();
-        }
-    }
-
-    async update() {}
-
-    async draw() {}
-}
-
-/** 해당 이름을 가진 객체를 세계에서 제거합니다 */
-export function instance_destroy(object_name) {
-  if (typeof object_name === 'object' && object_name.destroyProcess !== undefined) {
-    object_name.destroyProcess();
-  }
-  
-    for (let depth in window.variables.instances) {
-        for (let object in window.variables.instances[depth][object_name]) {
-            let _item = window.variables.instances[depth][object_name][object];
-            _item.destroyProcess();
-            delete window.variables.instances[depth][object_name][object];
-        }
-    }
-}
-
-export function instance_create(object, x, y, depth) {
-  if (depth === 0) {
-    alert('can not make instance at depth 0');    
-    return;
-  }
-  
-  if (depth === undefined) {
-    depth = 1;
-  }
-  
-  let ins = new object(depth, x, y);
-  if (ins.create !== undefined) {
-    ins.create();
-  }  
-  return ins;
-}
-
-export async function start() {
-    if (window.variables.debug_mode == true) {
-      console.log('debug mode enabled');
-    }
+    document.body.appendChild(this.renderer.view);
     
-    mobile_io_start();
-    pc_io_start();
-
-    async function loop() {      
-        return new Promise(
-        (resolve, reject) => {
-            window.requestAnimationFrame(async () => {
-              try {
-                const now = performance.now();
-                while (window.variables.display_time.length > 0
-                && window.variables.display_time[0] <= now - 1000) {
-                    window.variables.display_time.shift();
-                }
-                window.variables.display_time.push(now);
-                window.variables.fps = window.variables.display_time.length;
+    this.stage = new PIXI.Container();
+    this.graphics = new PIXI.Graphics();
+    this.render_time = [];
+    this.fps = 0;
+    this.debug = false;
+    this.layers = {};
+    this.layers_cache = [];
+    
+    window.variables = {
+      graphics: this.graphics
+    }
+  }
   
-                // 뒷 배경을 흰색으로 강제 초기화
-                window.variables.canvas.getContext('2d').clearRect(0, 0, window.variables.canvas.width, window.variables.canvas.height);
-
-                window.variables.mouse_x = window.variables.display_mouse_x;
-                window.variables.mouse_y = window.variables.display_mouse_y;
-               
-                let ratio = 1;
-                if (window.variables.fullscreen === true) {
-                  window.variables.mouse_x *= 2;
-                  window.variables.mouse_y *= 2;
-                  ratio = 2;
-                }
-                
-                window.variables.canvas.width = window.variables.canvas.clientWidth * ratio;
-                window.variables.canvas.height = window.variables.canvas.clientHeight * ratio;
-                window.variables.display_width = window.variables.canvas.width;
-                window.variables.display_height = window.variables.canvas.height;
-
-                for (let depth in window.variables.instances) {
-                    let instances_by_depth = window.variables.instances[depth];
-                    for (let object_name in instances_by_depth) {
-                        for (let index in instances_by_depth[object_name]) {
-                            let _item = instances_by_depth[object_name][index];
-                            if (_item.alive === true) {
-                                await _item.prepare();
-                            }
-                        }
-                    }
-                }
-                for (let depth in window.variables.instances) {
-                    let instances_by_depth = window.variables.instances[depth];
-                    for (let object_name in instances_by_depth) {
-                        for (let index in instances_by_depth[object_name]) {
-                            let _item = instances_by_depth[object_name][index];
-                            if (_item.alive === true) {
-                                await _item.update();
-                            }
-                        }
-                    }
-                }
-                for (let depth in window.variables.instances) {
-                    let instances_by_depth = window.variables.instances[depth];
-                    for (let object_name in instances_by_depth) {
-                        for (let index in instances_by_depth[object_name]) {
-                            let _item = instances_by_depth[object_name][index];
-                            if (_item.alive === true) {
-                                await _item.draw();
-                            }
-                        }
-                    }
-                }
-
-                window.variables.mouse_pressed = false;
+  set_screen_size(width, height) {
+    this.renderer.resize(width, height);
+  }
   
-                if (window.variables.debug_mode == true) {
-                    const ctx = window.variables.canvas.getContext('2d');
-                    ctx.font = '15px Arial';
-                    ctx.textAlign = 'left';
-                    ctx.fillStyle = 'green';
-                    ctx.globalAlpha = 1;
-                    ctx.fillText(window.variables.fps, 5, 15);
+  set_fullscreen() {
+    this.renderer.autoResize = true;
+    this.renderer.resize(window.innerWidth, window.innerHeight);
+    window.addEventListener('resize', () => {
+      this.renderer.resize(window.innerWidth, window.innerHeight);
+    });
+  }
+  
+  set_debug_mode() {
+    this.debug = true;
+    this.debug_text = new PIXI.Text('0', new PIXI.TextStyle({
+        fontFamily: 'Arial',
+        fontSize: 10,
+        fill: ['#00ff99', '#00ff99'], // gradient
+    }));
+    this.debug_text.x = 2;
+    this.debug_text.y = 2;
+    this.debug_text.anchor.set(0, 0);    
+  }
+  
+  start() {
+    this.render();
+  }
+  
+  async render() {
+    while(true) {
+      await this.render_tick();
+    }
+  }
+  
+  async render_tick() {
+    return new Promise((resolve, reject) => {
+      window.requestAnimationFrame(async () => {
+        try {
+          const now = performance.now();
+          while (this.render_time.length > 0 && this.render_time[0] <= now - 1000) {
+            this.render_time.shift();
+          }
+          this.render_time.push(now);
+          this.fps = this.render_time.length;
+         
+          for (const layer_index of this.layers_cache) {
+            for (const instance of this.layers[layer_index]) {
+             if (instance !== undefined && instance.alive === true) {
+                await instance.update();
+                for (const element of instance.draw_call()) {
+                  if (element.graphics !== undefined) {
+                    element.draw();
+                    this.stage.addChild(element.graphics);
+                  } else {
+                    this.stage.addChild(element);
+                  }
                 }
-              } catch(err) {
-                alert(err);
-                reject(err);
               }
-              resolve();
-          });
-      });
-    }
+            }
+          }
 
-    while (true) {
-      await loop();
+          if (this.debug === true) {
+            this.debug_text.text = this.fps;
+            this.stage.addChild(this.debug_text);
+          }
+          
+          this.renderer.render(this.stage);
+          if (this.debug === true) {
+            this.stage.removeChild(this.debug_text);
+          }
+          
+          for (const layer_index of this.layers_cache) {
+            for (const instance of this.layers[layer_index]) {
+              if (instance !== undefined) {
+                for (const element of instance.draw_call()) {
+                  if (element.graphics !== undefined) {
+                    this.stage.removeChild(element.graphics);
+                  } else {
+                    this.stage.removeChild(element);
+                  }
+                }
+              }
+            }
+          }
+        } catch(err) {
+          alert(err);
+          reject(err);
+        }
+        resolve();
+      });
+    });
+  }
+  
+  
+  instance_create(object, x = 0, y = 0, depth = 1) {
+    const ins = new object();
+    if (this.layers[depth] === undefined) {
+      this.layers[depth] = [];
+      this.layers_cache.push(depth);
+      this.layers_cache.sort((a, b) => a < b);
     }
+    const id = this.layers[depth].push(ins);
+    ins.init(id, depth, x, y);
+    ins.create();
+    return ins;
+  }
+  
+  instance_destroy(ins) {
+    ins.alive = false;
+    this.layers[ins.depth][ins.id] = undefined;
+  }
+}
+
+
+class ArtistObject {
+  constructor() {
+    this.alive = false;
+  }
+  init(id, depth, x, y) {
+    this.alive = true;
+    this.id = id;
+    this.depth = depth;
+    this.x = x;
+    this.y = y;
+  }
+  create() {}
+  update() {}
+  draw_call() {
+    return [];
+  }
 }
