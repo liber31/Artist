@@ -10,9 +10,7 @@ HTML5 Canvas 기반 2D 게임 엔진입니다.
 
 ## Examples
 
-- 화면에 text 그리기 - [바로가기](https://rhea-so.github.io/Artist/product/text)
-- 화면에 text를 기울여 그리기 - [바로가기](https://rhea-so.github.io/Artist/product/wave)
-- 전체화면 - [바로가기](https://rhea-so.github.io/Artist/product/fullscreen)
+> 현재 개발 중
 
 ## Support Git History
 
