@@ -8,6 +8,7 @@ window.variables = {
     display_time: [],
     display_width: 0,
     display_height: 0,
+    display_ratio: 0,
   
     update_queue: [],
     late_update_queue: [],

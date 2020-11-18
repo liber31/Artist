@@ -161,12 +161,13 @@ export async function start() {
                   window.variables.mouse_y *= 2;
                   ratio = 2;
                 }
-                
-                window.variables.canvas.width = window.variables.canvas.clientWidth * ratio;
-                window.variables.canvas.height = window.variables.canvas.clientHeight * ratio;
+              
+                window.variables.canvas.width = window.innerWidth * ratio;
+                window.variables.canvas.height = window.innerHeight * ratio;
                 window.variables.display_width = window.variables.canvas.width;
                 window.variables.display_height = window.variables.canvas.height;
-
+                window.variables.display_ratio = window.variables.display_width / window.variables.display_height;
+                
                 for (let depth in window.variables.instances) {
                     let instances_by_depth = window.variables.instances[depth];
                     for (let object_name in instances_by_depth) {

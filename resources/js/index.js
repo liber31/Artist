@@ -3,7 +3,6 @@ import { draw_rectangle, draw_text_transformed, draw_set_font, sprite_load, draw
 import { set_fullscreen } from './device.js';
 import { point_direction, lengthdir_x, lengthdir_y, random_range, irandom_range, ease_in_out_expo } from './math.js';
 
-
 const canvas = document.getElementById('canvas');
 
 try {
@@ -12,6 +11,8 @@ set_fullscreen(true);
 set_debug_mode(true);
 
 start();
+
+sprite_load('http://localhost:3000/image/popcorn.png', 'popcorn');
 
 setTimeout(() => {
   instance_create(Wallpaper, 0, 0, 1);
@@ -117,14 +118,32 @@ class Introduce extends ArtistElement {
     this.time = Math.min(this.max_time, this.time);
     this.angle = ease_in_out_expo(this.time / this.max_time) * 180 + 180;
     
+    const ratio = ((window.variables.display_width) / 1668) * 2;
+
     draw_set_font(50, 'Arial');
     draw_set_color(color.white);
     draw_text_transformed(
       window.variables.display_width / 2,
       window.variables.display_height - 200 * ease_in_out_expo(this.time / this.max_time) + 50,
-      'Firework!',
+      String(ratio),
       'center',
       this.angle);
+      
+  draw_rectangle(0, 0, window.variables.display_width, window.variables.display_height * window.variables.display_ratio, true);
+  
+  // 1668
+  // 1668 how to make display_height
+  // 
+  
+  draw_sprite_ext(
+    window.variables.display_width / 2,
+    (window.variables.display_height * window.variables.display_ratio) / 2,
+    'popcorn',
+    'center',
+    ratio,
+    ratio,
+    0
+    );
     draw_set_color(color.black);
   }
 }
