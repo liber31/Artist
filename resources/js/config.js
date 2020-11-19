@@ -32,4 +32,5 @@ window.variables = {
     draw_alpha: 1,
     draw_font: 'Arial',
     draw_font_size: 15,
+    draw_filter: 'none',
 };

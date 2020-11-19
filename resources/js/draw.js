@@ -133,6 +133,10 @@ export function draw_set_color(color) {
     window.variables.draw_color = color;
 }
 
+export function draw_set_filter(filter) {
+    window.variables.draw_filter = filter;
+}
+
 /** 드로우 모드의 폰트를 설정합니다 */
 export function draw_set_font(size, font) {
     window.variables.draw_font_size = size;
@@ -148,4 +152,5 @@ function setDrawMode(ctx) {
     ctx.globalAlpha = window.variables.draw_alpha;
     ctx.fillStyle = window.variables.draw_color;
     ctx.strokeStyle = window.variables.draw_color;
+    ctx.filter = window.variables.draw_filter;
 }
