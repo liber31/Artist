@@ -12,4 +12,6 @@ export function set_fullscreen(triggerBool) {
   window.variables.display_width = window.variables.canvas.width;
   window.variables.display_height = window.variables.canvas.height;
   window.variables.display_ratio = window.variables.display_width / window.variables.display_height;
+  window.variables.canvas.style['touch-action'] = 'none';
+  window.variables.canvas.style.cursor = 'inherit';
 }

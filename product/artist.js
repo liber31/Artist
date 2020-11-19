@@ -237,6 +237,13 @@ function set_fullscreen(triggerBool) {
   window.variables.canvas.style.width = '100%';
   window.variables.canvas.style.height = '100%';
   window.variables.fullscreen = true;
+  window.variables.canvas.width = window.innerWidth * 2;
+  window.variables.canvas.height = window.innerHeight * 2;
+  window.variables.display_width = window.variables.canvas.width;
+  window.variables.display_height = window.variables.canvas.height;
+  window.variables.display_ratio = window.variables.display_width / window.variables.display_height;
+  window.variables.canvas.style['touch-action'] = 'none';
+  window.variables.canvas.style.cursor = 'inherit';
 }
 
 const color = {
@@ -478,7 +485,7 @@ function random_range(min, max) {
 function irandom_range(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
+  return Math.round(Math.random() * (max - min)) + min;
 }
 
 function ease_in_quad(value) {
