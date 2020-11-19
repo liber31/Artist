@@ -161,12 +161,13 @@ async function start() {
                   window.variables.mouse_y *= 2;
                   ratio = 2;
                 }
-                
-                window.variables.canvas.width = window.variables.canvas.clientWidth * ratio;
-                window.variables.canvas.height = window.variables.canvas.clientHeight * ratio;
+              
+                window.variables.canvas.width = window.innerWidth * ratio;
+                window.variables.canvas.height = window.innerHeight * ratio;
                 window.variables.display_width = window.variables.canvas.width;
                 window.variables.display_height = window.variables.canvas.height;
-
+                window.variables.display_ratio = window.variables.display_width / window.variables.display_height;
+                
                 for (let depth in window.variables.instances) {
                     let instances_by_depth = window.variables.instances[depth];
                     for (let object_name in instances_by_depth) {
@@ -234,6 +235,7 @@ window.variables = {
     display_time: [],
     display_width: 0,
     display_height: 0,
+    display_ratio: 0,
   
     update_queue: [],
     late_update_queue: [],
@@ -261,27 +263,12 @@ window.variables = {
 
 
 function set_fullscreen(triggerBool) {
-  if (triggerBool === false) {
-    const displayWidth = window.variables.canvas.clientWidth;
-    const displayHeight = window.variables.canvas.clientHeight;
-    window.variables.display_width = displayWidth;
-    window.variables.display_height = displayHeight;
+  if (triggerBool === false) {    
     return;
   }
   
-  window.variables.canvas.style.width = '100vw';
-  window.variables.canvas.style.height = '100vh';
-  const displayWidth = window.variables.canvas.clientWidth;
-  const displayHeight = window.variables.canvas.clientHeight;
-
-  if (window.variables.canvas.width != displayWidth || window.variables.canvas.height != displayHeight) {
-    // mul 2 for retina display
-    window.variables.canvas.width = displayWidth * 2;
-    window.variables.canvas.height = displayHeight * 2;
-    window.variables.display_width = displayWidth * 2;
-    window.variables.display_height = displayHeight * 2;
-  }
-  
+  window.variables.canvas.style.width = '100%';
+  window.variables.canvas.style.height = '100%';
   window.variables.fullscreen = true;
 }
 
