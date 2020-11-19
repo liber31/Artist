@@ -13,10 +13,26 @@ set_debug_mode(true);
 start();
 setTimeout(() => {
   instance_create(MousePointer, 0, 0, 1);
+  for (let depth = 0; depth < 5; depth++) {
+    instance_create(Rectangle, 100 + depth * 30, 100 + depth * 30, depth);
+  }
 }, 0);
 
 } catch(err) {
   alert(err);
+}
+
+class Rectangle extends ArtistElement {
+  create() {
+    this.size = 60;
+  }
+  
+  draw() {
+    draw_set_color(color.white);
+    draw_rectangle(this.x - this.size, this.y - this.size, this.x + this.size, this.y + this.size, true);
+    draw_set_color(color.black);
+    draw_rectangle(this.x - this.size, this.y - this.size, this.x + this.size, this.y + this.size, false);
+  }
 }
 
 // 마우스 좌표를 알기 위한 목적으로 만든 클래스
@@ -24,7 +40,7 @@ class MousePointer extends ArtistElement {
   draw() {
     if (window.variables.mouse_click === true) {
       draw_set_alpha(0.6);
-      draw_set_color(color.black);
+      draw_set_color('rgb(255, 0, 0)');
       draw_circle(
         window.variables.mouse_x,
         window.variables.mouse_y,
