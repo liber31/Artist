@@ -23,10 +23,6 @@ export class ArtistElement {
     constructor(depth, x, y) {
         this.alive = true;
         this.id = uuid();
-        if (window.variables.debug_mode == true) {
-//          alert(`Instance created ${this.constructor.name} (${this.id})`);
-        }
-
         if (!window.variables.instances[depth]) {
             window.variables.instances[depth] = {};
         }
@@ -48,10 +44,6 @@ export class ArtistElement {
     /** 객체의 생사 여부를 결정 짓는 함수입니다 */        
     async destroyProcess() {
         if (this.alive === true) {
-            if (window.variables.debug_mode == true) {
-//              alert(`Instance destroyed ${this.constructor.name} (${this.id})`);
-            }
-            
             if (this.destroy !== undefined) {
               await this.destroy();
             }
@@ -112,19 +104,14 @@ export function instance_destroy(object_name) {
 }
 
 export function instance_create(object, x, y, depth) {
-  if (depth === 0) {
-    alert('can not make instance at depth 0');    
-    return;
-  }
-  
-  if (depth === undefined) {
-    depth = 1;
+ if (depth === undefined) {
+    depth = 0;
   }
   
   let ins = new object(depth, x, y);
   if (ins.create !== undefined) {
     ins.create();
-  }  
+  } 
   return ins;
 }
 
@@ -167,41 +154,21 @@ export async function start() {
                 window.variables.display_width = window.variables.canvas.width;
                 window.variables.display_height = window.variables.canvas.height;
                 window.variables.display_ratio = window.variables.display_width / window.variables.display_height;
+               
+                const depth_list = Object.keys(window.variables.instances).sort((a, b) => Number(a) > Number(b));
                 
-                for (let depth in window.variables.instances) {
-                    let instances_by_depth = window.variables.instances[depth];
-                    for (let object_name in instances_by_depth) {
-                        for (let index in instances_by_depth[object_name]) {
-                            let _item = instances_by_depth[object_name][index];
+                for (let depth of depth_list) {
+                    for (let object_name in window.variables.instances[depth]) {
+                        for (let index in window.variables.instances[depth][object_name]) {
+                            let _item = window.variables.instances[depth][object_name][index];
                             if (_item.alive === true) {
                                 await _item.prepare();
-                            }
-                        }
-                    }
-                }
-                for (let depth in window.variables.instances) {
-                    let instances_by_depth = window.variables.instances[depth];
-                    for (let object_name in instances_by_depth) {
-                        for (let index in instances_by_depth[object_name]) {
-                            let _item = instances_by_depth[object_name][index];
-                            if (_item.alive === true) {
                                 await _item.update();
-                            }
-                        }
-                    }
-                }
-                for (let depth in window.variables.instances) {
-                    let instances_by_depth = window.variables.instances[depth];
-                    for (let object_name in instances_by_depth) {
-                        for (let index in instances_by_depth[object_name]) {
-                            let _item = instances_by_depth[object_name][index];
-                            if (_item.alive === true) {
                                 await _item.draw();
                             }
                         }
                     }
                 }
-
                 window.variables.mouse_pressed = false;
   
                 if (window.variables.debug_mode == true) {
@@ -212,7 +179,7 @@ export async function start() {
                     ctx.globalAlpha = 1;
                     ctx.fillText(window.variables.fps, 5, 15);
                 }
-              } catch(err) {
+              } catch(err) {                
                 alert(err);
                 reject(err);
               }

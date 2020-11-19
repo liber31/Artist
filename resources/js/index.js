@@ -11,164 +11,27 @@ set_fullscreen(true);
 set_debug_mode(true);
 
 start();
-
-sprite_load('http://localhost:3000/image/popcorn.png', 'popcorn');
-
 setTimeout(() => {
-  instance_create(Wallpaper, 0, 0, 1);
-  instance_create(MousePointer, 0, 0, 4);
-  
-  setTimeout(() => {
-    instance_create(Introduce, 0, 0, 3);
-    
-    setInterval(() => {
-    instance_create(FireCore, 
-    window.variables.display_width / 2, 
-    window.variables.display_height, 2);
-    }, 3000);
-  }, 1000);
-}, 1);
+  instance_create(MousePointer, 0, 0, 1);
+  for (let depth = 0; depth < 5; depth++) {
+    instance_create(Rectangle, 100 + depth * 30, 100 + depth * 30, depth);
+  }
+}, 0);
 
 } catch(err) {
   alert(err);
 }
 
-class FireCore extends ArtistElement {
+class Rectangle extends ArtistElement {
   create() {
-    this.power = -(window.variables.display_height / 2) / 25;
-    this.power_width = irandom_range(-10, 10);
-    
-    setTimeout(() => {
-      for (let i = 0; i < 100; i++) {
-        instance_create(FireBall, this.x, this.y, 2);
-      }
-      instance_destroy(this);
-    }, 1200);
+    this.size = 60;
   }
   
   draw() {
-    this.y += this.power;
-    this.power += 0.5
-    this.x += this.power_width;
-    this.power_width += (0 - this.power_width) / 30;
     draw_set_color(color.white);
-    draw_circle(
-      this.x,
-      this.y,
-      7,
-      true
-     );
-     draw_set_color(color.black);
-  }
-}
-
-
-class FireBall extends ArtistElement {
-  create() {
-    this.target_angle = irandom_range(0, 360);
-    this.target_x = lengthdir_x(irandom_range(100, 800), this.target_angle);
-    this.target_y = lengthdir_y(irandom_range(100, 600), this.target_angle);
-    this.start_x = this.x;
-    this.start_y = this.y;
-    this.size = irandom_range(2, 10);
-    this.alpha = irandom_range(4, 10);
-    this.time = 0;
-    this.max_time = 20;
-    
-    setTimeout(() => {
-      instance_destroy(this);
-    }, 3000);
-  }
-  
-  draw() {
-    this.time++;
-    this.time = Math.min(this.max_time, this.time);
-    if (this.time === this.max_time) {
-      this.target_y += 3;
-    }
-    this.x += ((this.target_x + this.start_x) - this.x) / 25;
-    this.y += ((this.target_y + this.start_y) - this.y) / 20;
-   
-    this.alpha -= 0.05;
-    
-    draw_set_color(color.white);
-    draw_set_alpha(Math.min(Math.max(0, this.alpha), 1));
-    draw_circle(
-      this.x,
-      this.y,
-      this.size,
-      true
-     );
-     
-     draw_set_alpha(1);
-     draw_set_color(color.black);
-  }
-}
-
-
-class Introduce extends ArtistElement {
-  create() {
-    this.time = 0;
-    this.max_time = 50;
-    this.angle = 0;
-  }
-  
-  draw() {
-    this.time++;
-    this.time = Math.min(this.max_time, this.time);
-    this.angle = ease_in_out_expo(this.time / this.max_time) * 180 + 180;
-    
-    const ratio = ((window.variables.display_width) / 1668) * 2;
-
-    draw_set_font(50, 'Arial');
-    draw_set_color(color.white);
-    draw_text_transformed(
-      window.variables.display_width / 2,
-      window.variables.display_height - 200 * ease_in_out_expo(this.time / this.max_time) + 50,
-      String(ratio),
-      'center',
-      this.angle);
-      
-  draw_rectangle(0, 0, window.variables.display_width, window.variables.display_height * window.variables.display_ratio, true);
-  
-  // 1668
-  // 1668 how to make display_height
-  // 
-  
-  draw_sprite_ext(
-    window.variables.display_width / 2,
-    (window.variables.display_height * window.variables.display_ratio) / 2,
-    'popcorn',
-    'center',
-    ratio,
-    ratio,
-    0
-    );
+    draw_rectangle(this.x - this.size, this.y - this.size, this.x + this.size, this.y + this.size, true);
     draw_set_color(color.black);
-  }
-}
-
-class Wallpaper extends ArtistElement {
-  create() {
-    this.alpha = 0;
-    this.time = 0;
-    this.max_time = 50;
-  }
-  
-  draw() {
-    this.time++;
-    this.time = Math.min(this.max_time, this.time);
-    this.alpha = 0.8 * ease_in_out_expo(this.time / this.max_time);
-    
-    draw_set_alpha(this.alpha);
-    draw_set_color(color.black);
-    draw_rectangle(
-      0,
-      0,
-      window.variables.display_width,
-      window.variables.display_height,
-      true);
-    draw_set_alpha(1);
+    draw_rectangle(this.x - this.size, this.y - this.size, this.x + this.size, this.y + this.size, false);
   }
 }
 
@@ -177,7 +40,7 @@ class MousePointer extends ArtistElement {
   draw() {
     if (window.variables.mouse_click === true) {
       draw_set_alpha(0.6);
-      draw_set_color(color.white);
+      draw_set_color('rgb(255, 0, 0)');
       draw_circle(
         window.variables.mouse_x,
         window.variables.mouse_y,
