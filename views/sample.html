@@ -40,6 +40,8 @@
     <script type="text/javascript" src="https://rhea-so.github.io/Artist/product/artist.js"></script>
     
     <script>
+    
+    
 const canvas = document.getElementById('canvas');
 
 let gameArray = [
@@ -63,7 +65,7 @@ set_debug_mode(true);
 set_fps(60);
 
 start();
-
+try {
 class Wallpaper extends ArtistElement {
   create() {
     this.alpha = 0;
@@ -143,7 +145,6 @@ class Rectangle extends ArtistElement {
     this.targetSize = window.variables.display_width * window.variables.ratio / arrayWidth;
     this.size = 5;
     this.bounceSize = 0;
-    alert('hi');
   }
   
   pressed_me() {
@@ -217,5 +218,10 @@ setTimeout(() => {
     }
   }
 }, 1000);
-   </script>
+
+} catch(err) {
+  alert(err);
+}
+    
+    </script>
 </html>
