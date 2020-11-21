@@ -6,11 +6,17 @@ import { point_direction, lengthdir_x, lengthdir_y, random_range, irandom_range,
 const canvas = document.getElementById('canvas');
 
 let gameArray = [
-    [ 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
 ];
 const arrayWidth = gameArray[0].length;
 const arrayHeight = gameArray.length;
@@ -99,7 +105,7 @@ class Rectangle extends ArtistElement {
     this.alpha = 0;
     this.time = 0;
     this.maxTime = 30;
-    this.targetSize = window.variables.display_width * 1.5 / arrayWidth;
+    this.targetSize = 0;
     this.size = 5;
     this.bounceSize = 0;
   }
@@ -119,8 +125,9 @@ class Rectangle extends ArtistElement {
   }
   
   update() {
+    this.targetSize = (window.variables.display_width / arrayWidth);
     this.bounceSize += (0 - this.bounceSize) * 12 * window.variables.delta_time;
-    this.size = this.targetSize * window.variables.display_ratio;
+    this.size = this.targetSize;
     this.time += 20 * window.variables.delta_time;
     this.time = Math.min(this.time, this.maxTime);
     this.alpha = ease_in_out_expo(this.time / this.maxTime);
