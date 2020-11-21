@@ -43,15 +43,11 @@
 const canvas = document.getElementById('canvas');
 
 let gameArray = [
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
 ];
 const arrayWidth = gameArray[0].length;
 const arrayHeight = gameArray.length;
@@ -63,7 +59,7 @@ set_debug_mode(true);
 set_fps(60);
 
 start();
-
+try {
 class Wallpaper extends ArtistElement {
   create() {
     this.alpha = 0;
@@ -140,7 +136,7 @@ class Rectangle extends ArtistElement {
     this.alpha = 0;
     this.time = 0;
     this.maxTime = 30;
-    this.targetSize = window.variables.display_width * window.variables.ratio / arrayWidth;
+    this.targetSize = window.variables.display_width * 1.5 / arrayWidth;
     this.size = 5;
     this.bounceSize = 0;
   }
@@ -216,5 +212,9 @@ setTimeout(() => {
     }
   }
 }, 1000);
+
+} catch(err) {
+  alert(err);
+}
    </script>
 </html>
