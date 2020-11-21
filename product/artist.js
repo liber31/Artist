@@ -133,11 +133,12 @@ async function render() {
     ratio = window.devicePixelRatio;
     window.variables.mouse_x *= ratio;
     window.variables.mouse_y *= ratio;
+    window.variables.ratio = ratio;
   }
     
   canvas.width = window.innerWidth * ratio;
   canvas.height = window.innerHeight * ratio;
-  variables.display_width = window.variables.canvas.width;
+  variables.display_width = variables.canvas.width;
   variables.display_height = variables.canvas.height;
   variables.display_ratio = variables.display_width / variables.display_height;
      
@@ -185,9 +186,7 @@ async function start() {
         try { await render(); } catch(err) { alert(err); }
         frameCount++;
       }
-      
       window.variables.delta_time = elapsed / 1000;
-      
       requestAnimationFrame(frame);
     }
     
@@ -201,7 +200,7 @@ async function start() {
  
 window.variables = {
     canvas: undefined,
-    
+        
     debug_mode: false,
     fps: 0,
     fps_interval: 60,
