@@ -1,7 +1,7 @@
 //#CodeStart 
 window.variables = {
     canvas: undefined,
-    
+        
     debug_mode: false,
     fps: 0,
     fps_interval: 60,

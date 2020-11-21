@@ -5,92 +5,181 @@ import { point_direction, lengthdir_x, lengthdir_y, random_range, irandom_range,
 
 const canvas = document.getElementById('canvas');
 
-const text_array = ['안녕하세요', 'Hello','こんにちは','你好','Xin chào','Ciao','Guten Tag','Hola','Hej','salve','Apa kabar','merhaba','Habari za kucha','Сайн байна уу','Здравствуйте','mirëmëngjes','Bonjour'];
-try {
+let gameArray = [
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+];
+const arrayWidth = gameArray[0].length;
+const arrayHeight = gameArray.length;
+let finished = false;
+
 set_canvas(canvas);
 set_fullscreen(true);
 set_debug_mode(true);
 set_fps(60);
 
 start();
-setTimeout(() => {
-  instance_create(MousePointer, 0, 0, 1);
-  let index = 0;
-  setInterval(() => {
-    const text = instance_create(Texts, 0, 0, 2);
-    text.text = text_array[index];
-    index++;
-    index %= text_array.length;
-  }, 1000);
-}, 0);
-
-} catch(err) {
-  alert(err);
-}
-
-class Texts extends ArtistElement {
+try {
+class Wallpaper extends ArtistElement {
   create() {
-    this.size = irandom_range(1, 5);
-    this.text = '안녕하세요';
-    this.position_x = 1300;
-    this.position_y = irandom_range(0,1000);
     this.alpha = 0;
-    this.target_alpha = random_range(0.2, 0.8);
+    this.time = 0;
+    this.max_time = 40;
   }
   
   update() {
-    this.x = (window.variables.display_width / 1000) * this.position_x;
-    this.y = (window.variables.display_height / 1000) * this.position_y;
-    this.alpha += (this.target_alpha - this.alpha) / 30;
-    this.position_x -= window.variables.delta_time * 300;
-    
-    if (this.x < -window.variables.display_width) {
-      instance_destroy(this);
-    }
+    this.time += 20 * window.variables.delta_time;
+    this.time = Math.min(this.time, this.max_time);
+    this.alpha = ease_in_out_expo(this.time / this.max_time);
   }
   
   draw() {
-    draw_set_alpha(this.alpha);
     draw_set_color(color.black);
-    draw_set_font(
-      100 * window.variables.display_ratio * this.size,
-      'Arial');
-    draw_text_transformed(
-      this.x,
-      this.y,
-      this.text,
-      'center',
-      0
-      );
+    draw_set_alpha(this.alpha);
+    draw_rectangle(0, 0, window.variables.display_width, window.variables.display_height, true);
     draw_set_alpha(1);
   }
 }
 
-// 마우스 좌표를 알기 위한 목적으로 만든 클래스
-class MousePointer extends ArtistElement {
+class CongratulationEffect extends ArtistElement {
+  create() {
+    this.alpha = 0;
+    this.time = 0;
+    this.max_time = 40;
+  }
+
+  update() {
+    this.time += 20 * window.variables.delta_time;
+    this.time = Math.min(this.time, this.max_time);
+    this.alpha = ease_in_out_expo(this.time / this.max_time);
+  }
+
   draw() {
-    if (window.variables.mouse_click === true) {
-      draw_set_alpha(0.6);
-      draw_set_color(color.black);
-      draw_circle(
-        window.variables.mouse_x,
-        window.variables.mouse_y,
-        3,
-        true);
-      
-      draw_line(
-        0,
-        window.variables.mouse_y,
-        window.variables.display_width,
-        window.variables.mouse_y);
-        
-      draw_line(
-        window.variables.mouse_x,
-        0,
-        window.variables.mouse_x,
-        window.variables.display_height);
-       draw_set_alpha(1);
-       draw_set_color(color.black);
+    draw_set_color(color.white);
+    draw_set_alpha(this.alpha);
+    draw_rectangle(0, 0, window.variables.display_width, window.variables.display_height, true);
+    draw_set_alpha(1);
+  }
+}
+
+function reverse(array, x, y) {
+  let ins = null;
+  try {
+    ins = array[y][x];
+    ins.enable = !ins.enable;
+    ins.bounceSize = 1;
+  } catch(_err) {}
+}
+
+function checkGameFinished() {
+  for (let x = 0; x < arrayWidth; x++) {
+    for (let y = 0; y < arrayHeight; y++) {
+      try {
+        if (gameArray[y][x].enable === false) {
+          return;
+        }
+      } catch(err) {}
     }
   }
+  
+  finished = true;
+  setTimeout(() => {
+    instance_create(CongratulationEffect, 0, 0, 2);
+  }, 500);
+}
+
+class Rectangle extends ArtistElement {
+  create() {
+    this.array_x = 0;
+    this.array_y = 0;
+    this.enable = false;
+    this.alpha = 0;
+    this.time = 0;
+    this.maxTime = 30;
+    this.targetSize = window.variables.display_width * window.variables.ratio / arrayWidth;
+    this.size = 5;
+    this.bounceSize = 0;
+  }
+  
+  pressed_me() {
+    if (finished === true) {
+      return;
+    }
+    this.enable = !this.enable;
+    this.bounceSize = 1;
+    
+    reverse(gameArray, this.array_x - 1, this.array_y);
+    reverse(gameArray, this.array_x, this.array_y - 1);
+    reverse(gameArray, this.array_x + 1, this.array_y);
+    reverse(gameArray, this.array_x, this.array_y + 1);
+    checkGameFinished();
+  }
+  
+  update() {
+    this.bounceSize += (0 - this.bounceSize) * 12 * window.variables.delta_time;
+    this.size = this.targetSize * window.variables.display_ratio;
+    this.time += 20 * window.variables.delta_time;
+    this.time = Math.min(this.time, this.maxTime);
+    this.alpha = ease_in_out_expo(this.time / this.maxTime);
+    
+    this.x = window.variables.display_width / 2 - (this.size * arrayWidth) / 2 + (this.size) * this.array_x+ this.size / 2;
+    this.y = window.variables.display_height / 2 - (this.size * arrayHeight) / 2 + (this.size) * this.array_y + this.size / 2;
+    this.collider_width = this.size;
+    this.collider_height = this.size;
+  }
+  
+  draw() {
+    this.size *= 0.4;
+    this.size += this.size * this.bounceSize;
+    draw_set_color(color.white);
+    if (this.enable === false) {
+      draw_set_alpha(this.alpha * 0.1);
+      draw_rectangle(
+        this.x - this.size * this.alpha,
+        this.y - this.size * this.alpha,
+        this.x + this.size * this.alpha,
+        this.y + this.size * this.alpha,
+        true);
+    }
+    draw_set_alpha(this.alpha);
+    draw_rectangle(
+      this.x - this.size * this.alpha,
+      this.y - this.size * this.alpha,
+      this.x + this.size * this.alpha,
+      this.y + this.size * this.alpha,
+      this.enable);
+    draw_set_alpha(1);
+  }
+}
+
+instance_create(Wallpaper, 0, 0, 0);
+
+setTimeout(() => {
+  for (let x = 0; x < arrayWidth; x++) {
+    for (let y = 0; y < arrayHeight; y++) {
+      if (gameArray[y][x] === -1 || gameArray[y][x] === undefined) {
+        continue;
+      }
+      const rect = instance_create(Rectangle, 0, 0, 0);
+      rect.array_x = x;
+      rect.array_y = y;
+      
+      if (gameArray[y][x] === 1) {
+        rect.enable = true;
+      }
+      
+      gameArray[y][x] = rect;
+    }
+  }
+}, 1000);
+
+} catch(err) {
+  alert(err);
 }
