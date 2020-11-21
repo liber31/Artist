@@ -159,7 +159,7 @@ class Rectangle extends ArtistElement {
   }
 }
 
-instance_create(Wallpaper, 0, 0, 0);
+instance_create(Wallpaper, 0, 0, -1);
 
 setTimeout(() => {
   for (let x = 0; x < arrayWidth; x++) {
