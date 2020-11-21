@@ -162,7 +162,8 @@ class Rectangle extends ArtistElement {
   }
   
   update() {
-    this.targetSize = (window.variables.display_width / arrayWidth);
+    const maxLength = window.variables.display_height > window.variables.display_width? window.variables.display_width : window.variables.display_height;
+    this.targetSize = (maxLength / arrayWidth);
     this.bounceSize += (0 - this.bounceSize) * 12 * window.variables.delta_time;
     this.size = this.targetSize;
     this.time += 20 * window.variables.delta_time;
