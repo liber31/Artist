@@ -4,8 +4,9 @@ window.variables = {
     
     debug_mode: false,
     fps: 0,
+    fps_interval: 60,
     fullscreen: false,
-    display_time: [],
+    delta_time: 0,
     display_width: 0,
     display_height: 0,
     display_ratio: 0,

@@ -1,7 +1,8 @@
 import './config.js';
-import { mobile_io_start, pc_io_start } from './io.js';
+import { IOWatchStart } from './io.js';
 
 //#CodeStart
+
 export function set_canvas(canvas) {
   window.variables.canvas = canvas;
 }
@@ -10,8 +11,8 @@ export function set_debug_mode(triggerBool) {
   window.variables.debug_mode = triggerBool;
 }
 
+/** @description UUID v4 generator in JavaScript (RFC4122 compliant) */
 export function uuid() {
-    // UUID v4 generator in JavaScript (RFC4122 compliant)
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = (Math.random() * 16) | 0,
             v = c == 'x' ? r : (r & 3) | 8;
@@ -88,7 +89,7 @@ export class ArtistElement {
     async draw() {}
 }
 
-/** 해당 이름을 가진 객체를 세계에서 제거합니다 */
+/** @description 해당 이름을 가진 객체를 세계에서 제거합니다 */
 export function instance_destroy(object_name) {
   if (typeof object_name === 'object' && object_name.destroyProcess !== undefined) {
     object_name.destroyProcess();
@@ -115,80 +116,84 @@ export function instance_create(object, x, y, depth) {
   return ins;
 }
 
+export function set_fps(fpsInterval) {
+  window.variables.fps_interval = fpsInterval;
+}
+
+export async function render() {
+  const canvas = window.variables.canvas;
+  const variables = window.variables;
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
+  variables.mouse_x = variables.display_mouse_x;
+  variables.mouse_y = variables.display_mouse_y;
+     
+  let ratio = 1;
+  if (window.variables.fullscreen === true) {
+    ratio = window.devicePixelRatio;
+    window.variables.mouse_x *= ratio;
+    window.variables.mouse_y *= ratio;
+  }
+    
+  canvas.width = window.innerWidth * ratio;
+  canvas.height = window.innerHeight * ratio;
+  variables.display_width = window.variables.canvas.width;
+  variables.display_height = variables.canvas.height;
+  variables.display_ratio = variables.display_width / variables.display_height;
+     
+  const depth_list = Object.keys(variables.instances).sort((a, b) => Number(a) > Number(b));
+  
+  for (let depth of depth_list) {
+      for (let object_name in variables.instances[depth]) {
+          for (let index in variables.instances[depth][object_name]) {
+              let item = variables.instances[depth][object_name][index];
+              if (item.alive === true) {
+                  await item.prepare();
+                  await item.update();
+                  await item.draw();
+              }
+          }
+      }
+  }
+  variables.mouse_pressed = false;
+
+  if (variables.debug_mode == true) {
+      const ctx = canvas.getContext('2d');
+      ctx.font = '15px Arial';
+      ctx.textAlign = 'left';
+      ctx.fillStyle = 'green';
+      ctx.globalAlpha = 1;
+      ctx.fillText(variables.fps, 5, 15);
+  }
+}
+
 export async function start() {
-    if (window.variables.debug_mode == true) {
-      console.log('debug mode enabled');
+    IOWatchStart();
+
+    let frameCount = 0;
+    let fpsInterval = 1000 / window.variables.fps_interval;
+    let then = performance.now();
+    let startTime = then;
+    let elapsed = 0;
+    
+    async function frame() {
+      const now = performance.now();
+      elapsed = now - then;
+      
+      if (elapsed > fpsInterval) {
+        then = now - (elapsed % fpsInterval);
+        try { await render(); } catch(err) { alert(err); }
+        frameCount++;
+      }
+      
+      window.variables.delta_time = elapsed / 1000;
+      
+      requestAnimationFrame(frame);
     }
     
-    mobile_io_start();
-    pc_io_start();
-
-    async function loop() {      
-        return new Promise(
-        (resolve, reject) => {
-            window.requestAnimationFrame(async () => {
-              try {
-                const now = performance.now();
-                while (window.variables.display_time.length > 0
-                && window.variables.display_time[0] <= now - 1000) {
-                    window.variables.display_time.shift();
-                }
-                window.variables.display_time.push(now);
-                window.variables.fps = window.variables.display_time.length;
-  
-                // 뒷 배경을 흰색으로 강제 초기화
-                window.variables.canvas.getContext('2d').clearRect(0, 0, window.variables.canvas.width, window.variables.canvas.height);
-
-                window.variables.mouse_x = window.variables.display_mouse_x;
-                window.variables.mouse_y = window.variables.display_mouse_y;
-               
-                let ratio = 1;
-                if (window.variables.fullscreen === true) {
-                  window.variables.mouse_x *= 2;
-                  window.variables.mouse_y *= 2;
-                  ratio = 2;
-                }
-              
-                window.variables.canvas.width = window.innerWidth * ratio;
-                window.variables.canvas.height = window.innerHeight * ratio;
-                window.variables.display_width = window.variables.canvas.width;
-                window.variables.display_height = window.variables.canvas.height;
-                window.variables.display_ratio = window.variables.display_width / window.variables.display_height;
-               
-                const depth_list = Object.keys(window.variables.instances).sort((a, b) => Number(a) > Number(b));
-                
-                for (let depth of depth_list) {
-                    for (let object_name in window.variables.instances[depth]) {
-                        for (let index in window.variables.instances[depth][object_name]) {
-                            let _item = window.variables.instances[depth][object_name][index];
-                            if (_item.alive === true) {
-                                await _item.prepare();
-                                await _item.update();
-                                await _item.draw();
-                            }
-                        }
-                    }
-                }
-                window.variables.mouse_pressed = false;
-  
-                if (window.variables.debug_mode == true) {
-                    const ctx = window.variables.canvas.getContext('2d');
-                    ctx.font = '15px Arial';
-                    ctx.textAlign = 'left';
-                    ctx.fillStyle = 'green';
-                    ctx.globalAlpha = 1;
-                    ctx.fillText(window.variables.fps, 5, 15);
-                }
-              } catch(err) {                
-                alert(err);
-                reject(err);
-              }
-              resolve();
-          });
-      });
-    }
-
-    while (true) {
-      await loop();
-    }
+    setInterval(() => {
+      window.variables.fps = frameCount
+      frameCount = 0;
+    }, 1000);
+    frame();
 }

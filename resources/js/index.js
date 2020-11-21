@@ -1,4 +1,4 @@
-import { set_canvas, set_debug_mode, start, ArtistElement, instance_create, instance_destroy } from './artist.js';
+import { set_fps, set_canvas, set_debug_mode, start, ArtistElement, instance_create, instance_destroy } from './artist.js';
 import { draw_set_filter, draw_rectangle, draw_text_transformed, draw_set_font, sprite_load, draw_sprite, draw_line, draw_text, draw_circle, draw_set_alpha, draw_set_color, color, draw_sprite_ext } from './draw.js';
 import { set_fullscreen } from './device.js';
 import { point_direction, lengthdir_x, lengthdir_y, random_range, irandom_range, ease_in_out_expo } from './math.js';
@@ -10,11 +10,11 @@ try {
 set_canvas(canvas);
 set_fullscreen(true);
 set_debug_mode(true);
+set_fps(60);
 
 start();
 setTimeout(() => {
   instance_create(MousePointer, 0, 0, 1);
-  draw_set_filter('blur(16px)');
   let index = 0;
   setInterval(() => {
     const text = instance_create(Texts, 0, 0, 2);
@@ -42,7 +42,7 @@ class Texts extends ArtistElement {
     this.x = (window.variables.display_width / 1000) * this.position_x;
     this.y = (window.variables.display_height / 1000) * this.position_y;
     this.alpha += (this.target_alpha - this.alpha) / 30;
-    this.position_x -= this.alpha * 5;
+    this.position_x -= window.variables.delta_time * 300;
     
     if (this.x < -window.variables.display_width) {
       instance_destroy(this);
@@ -70,7 +70,6 @@ class Texts extends ArtistElement {
 class MousePointer extends ArtistElement {
   draw() {
     if (window.variables.mouse_click === true) {
-//      window.variables.canvas.style.webkitFilter = 'blur(0px)';
       draw_set_alpha(0.6);
       draw_set_color(color.black);
       draw_circle(
@@ -92,9 +91,6 @@ class MousePointer extends ArtistElement {
         window.variables.display_height);
        draw_set_alpha(1);
        draw_set_color(color.black);
-//       window.variables.canvas.style.webkitFilter = 'blur(3px)';
-    } else {
-//      window.variables.canvas.style.webkitFilter = 'blur(0px)';
     }
   }
 }
