@@ -93,7 +93,7 @@ function checkGameFinished() {
   
   finished = true;
   setTimeout(() => {
-    instance_create(CongratulationEffect, 0, 0, 2);
+    instance_create(CongratulationEffect, 0, 0, -2);
   }, 500);
 }
 

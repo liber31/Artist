@@ -142,7 +142,7 @@ async function render() {
   variables.display_height = variables.canvas.height;
   variables.display_ratio = variables.display_width / variables.display_height;
      
-  const depth_list = Object.keys(variables.instances).sort((a, b) => Number(a) < Number(b));
+  const depth_list = Object.keys(variables.instances).sort((a, b) => Number(b) - Number(a));
   
   for (let depth of depth_list) {
       for (let object_name in variables.instances[depth]) {
