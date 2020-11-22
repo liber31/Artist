@@ -117,7 +117,7 @@ export function instance_create(object, x, y, depth) {
 }
 
 export function set_fps(fpsInterval) {
-  window.variables.fps_interval = fpsInterval;
+  window.variables.fps_interval = 1000 / fpsInterval;
 }
 
 export async function render() {
@@ -142,7 +142,7 @@ export async function render() {
   variables.display_height = variables.canvas.height;
   variables.display_ratio = variables.display_width / variables.display_height;
      
-  const depth_list = Object.keys(variables.instances).sort((a, b) => Number(a) > Number(b));
+  const depth_list = Object.keys(variables.instances).sort((a, b) => Number(a) < Number(b));
   
   for (let depth of depth_list) {
       for (let object_name in variables.instances[depth]) {
@@ -172,7 +172,6 @@ export async function start() {
     IOWatchStart();
 
     let frameCount = 0;
-    let fpsInterval = 1000 / window.variables.fps_interval;
     let then = performance.now();
     let startTime = then;
     let elapsed = 0;
@@ -181,8 +180,8 @@ export async function start() {
       const now = performance.now();
       elapsed = now - then;
       
-      if (elapsed > fpsInterval) {
-        then = now - (elapsed % fpsInterval);
+      if (elapsed > window.variables.fps_interval) {
+        then = now - (elapsed % window.variables.fps_interval);
         try { await render(); } catch(err) { alert(err); }
         frameCount++;
       }

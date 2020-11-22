@@ -163,7 +163,7 @@ class Rectangle extends ArtistElement {
   }
 }
 
-instance_create(Wallpaper, 0, 0, -1);
+instance_create(Wallpaper, 0, 0, 0);
 
 setTimeout(() => {
   for (let x = 0; x < arrayWidth; x++) {
@@ -171,7 +171,7 @@ setTimeout(() => {
       if (gameArray[y][x] === -1 || gameArray[y][x] === undefined) {
         continue;
       }
-      const rect = instance_create(Rectangle, 0, 0, 0);
+      const rect = instance_create(Rectangle, 0, 0, -1);
       rect.array_x = x;
       rect.array_y = y;
       
