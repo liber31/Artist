@@ -3,8 +3,6 @@
 // -- -- -- -- -- -- -- -- -- -- -- --
 
 
-window.variables.TARGET_CANVAS = document.createElement('canvas');
-
 function setTargetSize(width, height) {
   window.variables.WIDTH = width;
   window.variables.HEIGHT = height;
@@ -901,7 +899,7 @@ window.variables = {
     FULLSCREEN: false,
     DELTA_TIME: 0,
 
-    TARGET_CANVAS: undefined,
+    TARGET_CANVAS: document.createElement('canvas'),
     WIDTH: 0,
     HEIGHT: 0,
 

@@ -5,8 +5,6 @@ import '../config.js';
 
 //#CodeStart
 
-window.variables.TARGET_CANVAS = document.createElement('canvas');
-
 export function setTargetSize(width, height) {
   window.variables.WIDTH = width;
   window.variables.HEIGHT = height;

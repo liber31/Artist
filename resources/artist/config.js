@@ -8,7 +8,7 @@ window.variables = {
     FULLSCREEN: false,
     DELTA_TIME: 0,
 
-    TARGET_CANVAS: undefined,
+    TARGET_CANVAS: document.createElement('canvas'),
     WIDTH: 0,
     HEIGHT: 0,
 
