@@ -1,229 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-        <title>Fill</title>
-    </head>
 
-    <style type="text/css">
-    html, body {
-      margin: 0;
-      height: 100%;
-      overflow: hidden
-    }
-    
-    * {
-        padding: 0 auto;
-        margin: 0 auto;
-    }
-    
-    /* border 제거 */
-    body {
-        border: 0;
-        background-color: white;
-    }
-    
-    /* canvas를 viewport 크기로 만들기 */
-    canvas {
-        overflow: hidden;
-        position: fixed;
-        display: block;
-    }
-    </style>
-    
-    <body>
-        <canvas id="canvas"></canvas>
-    </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>Fill</title>
+</head>
 
-    <!-- script src="/socket.io-client/dist/socket.io.js" -->
-    <script type="text/javascript" src="https://rhea-so.github.io/Artist/product/artist.js"></script>
-    
-    <script>
-const canvas = document.getElementById('canvas');
-
-let gameArray = [
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ],
-];
-const arrayWidth = gameArray[0].length;
-const arrayHeight = gameArray.length;
-let finished = false;
-
-set_canvas(canvas);
-set_fullscreen(true);
-set_debug_mode(true);
-set_fps(60);
-
-start();
-try {
-class Wallpaper extends ArtistElement {
-  create() {
-    this.alpha = 0;
-    this.time = 0;
-    this.max_time = 40;
-  }
-  
-  update() {
-    this.time += 20 * window.variables.delta_time;
-    this.time = Math.min(this.time, this.max_time);
-    this.alpha = ease_in_out_expo(this.time / this.max_time);
-  }
-  
-  draw() {
-    draw_set_color(color.black);
-    draw_set_alpha(this.alpha);
-    draw_rectangle(0, 0, window.variables.display_width, window.variables.display_height, true);
-    draw_set_alpha(1);
-  }
-}
-
-class CongratulationEffect extends ArtistElement {
-  create() {
-    this.alpha = 0;
-    this.time = 0;
-    this.max_time = 40;
+<style type="text/css">
+  html,
+  body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden
   }
 
-  update() {
-    this.time += 20 * window.variables.delta_time;
-    this.time = Math.min(this.time, this.max_time);
-    this.alpha = ease_in_out_expo(this.time / this.max_time);
+  * {
+    padding: 0 auto;
+    margin: 0 auto;
   }
 
-  draw() {
-    draw_set_color(color.white);
-    draw_set_alpha(this.alpha);
-    draw_rectangle(0, 0, window.variables.display_width, window.variables.display_height, true);
-    draw_set_alpha(1);
+  /* border 제거 */
+  body {
+    border: 0;
+    background-color: white;
   }
-}
 
-function reverse(array, x, y) {
-  let ins = null;
+  /* canvas를 viewport 크기로 만들기 */
+  canvas {
+    overflow: hidden;
+    position: fixed;
+    display: block;
+  }
+</style>
+
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+
+<!-- script src="/socket.io-client/dist/socket.io.js" -->
+<script type="text/javascript" src="https://rhea-so.github.io/Artist/product/artist.js"></script>
+
+<script>
+  const canvas = document.getElementById('canvas');
+
+  let gameArray = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+  const arrayWidth = gameArray[0].length;
+  const arrayHeight = gameArray.length;
+  let finished = false;
+
+  set_canvas(canvas);
+  set_FULLSCREEN(true);
+  set_DEBUG_MODE(true);
+  set_FPS(60);
+
+  start();
   try {
-    ins = array[y][x];
-    ins.enable = !ins.enable;
-    ins.bounceSize = 1;
-  } catch(_err) {}
-}
+    class Wallpaper extends ArtistElement {
+      create() {
+        this.alpha = 0;
+        this.time = 0;
+        this.max_time = 40;
+      }
 
-function checkGameFinished() {
-  for (let x = 0; x < arrayWidth; x++) {
-    for (let y = 0; y < arrayHeight; y++) {
+      update() {
+        this.time += 20 * window.variables.DELTA_TIME;
+        this.time = Math.min(this.time, this.max_time);
+        this.alpha = ease_in_out_expo(this.time / this.max_time);
+      }
+
+      draw() {
+        drawSetColor(color.black);
+        drawSetAlpha(this.alpha);
+        drawRectangle(0, 0, window.variables.DISPLAY_WIDTH, window.variables.DISPLAY_HEIGHT, true);
+        drawSetAlpha(1);
+      }
+    }
+
+    class CongratulationEffect extends ArtistElement {
+      create() {
+        this.alpha = 0;
+        this.time = 0;
+        this.max_time = 40;
+      }
+
+      update() {
+        this.time += 20 * window.variables.DELTA_TIME;
+        this.time = Math.min(this.time, this.max_time);
+        this.alpha = ease_in_out_expo(this.time / this.max_time);
+      }
+
+      draw() {
+        drawSetColor(color.white);
+        drawSetAlpha(this.alpha);
+        drawRectangle(0, 0, window.variables.DISPLAY_WIDTH, window.variables.DISPLAY_HEIGHT, true);
+        drawSetAlpha(1);
+      }
+    }
+
+    function reverse(array, x, y) {
+      let ins = null;
       try {
-        if (gameArray[y][x].enable === false) {
+        ins = array[y][x];
+        ins.enable = !ins.enable;
+        ins.bounceSize = 1;
+      } catch (_err) { }
+    }
+
+    function checkGameFinished() {
+      for (let x = 0; x < arrayWidth; x++) {
+        for (let y = 0; y < arrayHeight; y++) {
+          try {
+            if (gameArray[y][x].enable === false) {
+              return;
+            }
+          } catch (err) { }
+        }
+      }
+
+      finished = true;
+      setTimeout(() => {
+        instance_create(CongratulationEffect, 0, 0, -2);
+      }, 500);
+    }
+
+    class Rectangle extends ArtistElement {
+      create() {
+        this.array_x = 0;
+        this.array_y = 0;
+        this.enable = false;
+        this.alpha = 0;
+        this.time = 0;
+        this.maxTime = 30;
+        this.targetSize = 0;
+        this.size = 5;
+        this.bounceSize = 0;
+      }
+
+      pressed_me() {
+        if (finished === true) {
           return;
         }
-      } catch(err) {}
-    }
-  }
-  
-  finished = true;
-  setTimeout(() => {
-    instance_create(CongratulationEffect, 0, 0, -2);
-  }, 500);
-}
+        this.enable = !this.enable;
+        this.bounceSize = 1;
 
-class Rectangle extends ArtistElement {
-  create() {
-    this.array_x = 0;
-    this.array_y = 0;
-    this.enable = false;
-    this.alpha = 0;
-    this.time = 0;
-    this.maxTime = 30;
-    this.targetSize = 0;
-    this.size = 5;
-    this.bounceSize = 0;
-  }
-  
-  pressed_me() {
-    if (finished === true) {
-      return;
-    }
-    this.enable = !this.enable;
-    this.bounceSize = 1;
-    
-    reverse(gameArray, this.array_x - 1, this.array_y);
-    reverse(gameArray, this.array_x, this.array_y - 1);
-    reverse(gameArray, this.array_x + 1, this.array_y);
-    reverse(gameArray, this.array_x, this.array_y + 1);
-    checkGameFinished();
-  }
-  
-  update() {
-    const maxLength = window.variables.display_height > window.variables.display_width? window.variables.display_width : window.variables.display_height;
-    this.targetSize = (maxLength / arrayWidth);
-    this.bounceSize += (0 - this.bounceSize) * 12 * window.variables.delta_time;
-    this.size = this.targetSize;
-    this.time += 20 * window.variables.delta_time;
-    this.time = Math.min(this.time, this.maxTime);
-    this.alpha = ease_in_out_expo(this.time / this.maxTime);
-    
-    this.x = window.variables.display_width / 2 - (this.size * arrayWidth) / 2 + (this.size) * this.array_x+ this.size / 2;
-    this.y = window.variables.display_height / 2 - (this.size * arrayHeight) / 2 + (this.size) * this.array_y + this.size / 2;
-    this.collider_width = this.size;
-    this.collider_height = this.size;
-  }
-  
-  draw() {
-    this.size *= 0.4;
-    this.size += this.size * this.bounceSize;
-    draw_set_color(color.white);
-    if (this.enable === false) {
-      draw_set_alpha(this.alpha * 0.1);
-      draw_rectangle(
-        this.x - this.size * this.alpha,
-        this.y - this.size * this.alpha,
-        this.x + this.size * this.alpha,
-        this.y + this.size * this.alpha,
-        true);
-    }
-    draw_set_alpha(this.alpha);
-    draw_rectangle(
-      this.x - this.size * this.alpha,
-      this.y - this.size * this.alpha,
-      this.x + this.size * this.alpha,
-      this.y + this.size * this.alpha,
-      this.enable);
-    draw_set_alpha(1);
-  }
-}
-
-instance_create(Wallpaper, 0, 0, 0);
-
-setTimeout(() => {
-  for (let x = 0; x < arrayWidth; x++) {
-    for (let y = 0; y < arrayHeight; y++) {
-      if (gameArray[y][x] === -1 || gameArray[y][x] === undefined) {
-        continue;
+        reverse(gameArray, this.array_x - 1, this.array_y);
+        reverse(gameArray, this.array_x, this.array_y - 1);
+        reverse(gameArray, this.array_x + 1, this.array_y);
+        reverse(gameArray, this.array_x, this.array_y + 1);
+        checkGameFinished();
       }
-      const rect = instance_create(Rectangle, 0, 0, -1);
-      rect.array_x = x;
-      rect.array_y = y;
-      
-      if (gameArray[y][x] === 1) {
-        rect.enable = true;
+
+      update() {
+        const maxLength = window.variables.DISPLAY_HEIGHT > window.variables.DISPLAY_WIDTH ? window.variables.DISPLAY_WIDTH : window.variables.DISPLAY_HEIGHT;
+        this.targetSize = (maxLength / arrayWidth);
+        this.bounceSize += (0 - this.bounceSize) * 12 * window.variables.DELTA_TIME;
+        this.size = this.targetSize;
+        this.time += 20 * window.variables.DELTA_TIME;
+        this.time = Math.min(this.time, this.maxTime);
+        this.alpha = ease_in_out_expo(this.time / this.maxTime);
+
+        this.x = window.variables.DISPLAY_WIDTH / 2 - (this.size * arrayWidth) / 2 + (this.size) * this.array_x + this.size / 2;
+        this.y = window.variables.DISPLAY_HEIGHT / 2 - (this.size * arrayHeight) / 2 + (this.size) * this.array_y + this.size / 2;
+        this.collider_WIDTH = this.size;
+        this.collider_HEIGHT = this.size;
       }
-      
-      gameArray[y][x] = rect;
+
+      draw() {
+        this.size *= 0.4;
+        this.size += this.size * this.bounceSize;
+        drawSetColor(color.white);
+        if (this.enable === false) {
+          drawSetAlpha(this.alpha * 0.1);
+          drawRectangle(
+            this.x - this.size * this.alpha,
+            this.y - this.size * this.alpha,
+            this.x + this.size * this.alpha,
+            this.y + this.size * this.alpha,
+            true);
+        }
+        drawSetAlpha(this.alpha);
+        drawRectangle(
+          this.x - this.size * this.alpha,
+          this.y - this.size * this.alpha,
+          this.x + this.size * this.alpha,
+          this.y + this.size * this.alpha,
+          this.enable);
+        drawSetAlpha(1);
+      }
     }
+
+    instance_create(Wallpaper, 0, 0, 0);
+
+    setTimeout(() => {
+      for (let x = 0; x < arrayWidth; x++) {
+        for (let y = 0; y < arrayHeight; y++) {
+          if (gameArray[y][x] === -1 || gameArray[y][x] === undefined) {
+            continue;
+          }
+          const rect = instance_create(Rectangle, 0, 0, -1);
+          rect.array_x = x;
+          rect.array_y = y;
+
+          if (gameArray[y][x] === 1) {
+            rect.enable = true;
+          }
+
+          gameArray[y][x] = rect;
+        }
+      }
+    }, 1000);
+
+  } catch (err) {
+    alert(err);
   }
-}, 1000);
 
-} catch(err) {
-  alert(err);
-}
+</script>
 
-   </script>
 </html>

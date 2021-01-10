@@ -1,104 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-        <title>"Hello" text page</title>
-    </head>
 
-    <style type="text/css">
-    html, body {
-      margin: 0;
-      height: 100%;
-      overflow: hidden
-    }
-    
-    * {
-        padding: 0 auto;
-        margin: 0 auto;
-    }
-    
-    /* border 제거 */
-    body {
-        border: 0;
-        background-color: white;
-    }
-    
-    /* canvas를 viewport 크기로 만들기 */
-    canvas {
-        overflow: hidden;
-        position: fixed;
-        display: block;
-    }
-    </style>
-    
-    <body>
-        <canvas id="canvas"></canvas>
-    </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>"Hello" text page</title>
+</head>
 
-    <!-- script src="/socket.io-client/dist/socket.io.js" -->
-    <script type="text/javascript" src="https://rhea-so.github.io/Artist/product/artist.js"></script>
-    
-    <script>
-    const canvas = document.getElementById('canvas');
-    
-    const text_array = ['안녕하세요', 'Hello','こんにちは','你好','Xin chào','Ciao','Guten Tag','Hola','Hej','salve','Apa kabar','merhaba','Habari za kucha','Сайн байна уу','Здравствуйте','mirëmëngjes','Bonjour'];
-    try {
-    set_canvas(canvas);
-    set_fullscreen(true);
-    set_debug_mode(true);
-    
-    start();
+<style type="text/css">
+  html,
+  body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden
+  }
+
+  * {
+    padding: 0 auto;
+    margin: 0 auto;
+  }
+
+  /* border 제거 */
+  body {
+    border: 0;
+    background-color: white;
+  }
+
+  /* canvas를 viewport 크기로 만들기 */
+  canvas {
+    overflow: hidden;
+    position: fixed;
+    display: block;
+  }
+</style>
+
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+
+<!-- script src="/socket.io-client/dist/socket.io.js" -->
+<script type="text/javascript" src="https://rhea-so.github.io/Artist/product/artist.js"></script>
+
+<script>
+  setCanvas(document.getElementById('canvas'));
+  setTargetSize(480, 800);
+  setFullScreen(true);
+  setDebugMode(true);
+  setFps(60);
+
+  const global = window.variables;
+
+  const text_array = ['안녕하세요', 'Hello', 'こんにちは', '你好', 'Xin chào', 'Ciao', 'Guten Tag', 'Hola', 'Hej', 'salve', 'Apa kabar', 'merhaba', 'Habari za kucha', 'Сайн байна уу', 'Здравствуйте', 'mirëmëngjes', 'Bonjour'];
+  try {
     setTimeout(() => {
       let index = 0;
       setInterval(() => {
-        const text = instance_create(Texts, 0, 0, 2);
+        const text = instanceCreate(Text, 0, 0, 2);
         text.text = text_array[index];
         index++;
         index %= text_array.length;
       }, 1000);
     }, 0);
-    
-    } catch(err) {
-      alert(err);
+  } catch (err) {
+    alert(err);
+  }
+
+  class Text extends ArtistElement {
+    create() {
+      this.size = irandomRange(1, 5);
+      this.text = '안녕하세요';
+      this.position_x = 1300;
+      this.position_y = irandomRange(0, 1000);
+      this.alpha = 0;
+      this.target_alpha = randomRange(0.2, 0.8);
     }
-    
-    class Texts extends ArtistElement {
-      create() {
-        this.size = irandom_range(1, 5);
-        this.text = '안녕하세요';
-        this.position_x = 1300;
-        this.position_y = irandom_range(0,1000);
-        this.alpha = 0;
-        this.target_alpha = random_range(0.2, 0.8);
-      }
-      
-      update() {
-        this.x = (window.variables.display_width / 1000) * this.position_x;
-        this.y = (window.variables.display_height / 1000) * this.position_y;
-        this.alpha += (this.target_alpha - this.alpha) / 30;
-        this.position_x -= this.alpha * 5;
-        
-        if (this.x < -window.variables.display_width) {
-          instance_destroy(this);
-        }
-      }
-      
-      draw() {
-        draw_set_alpha(this.alpha);
-        draw_set_color(color.black);
-        draw_set_font(
-          100 * window.variables.display_ratio * this.size,
-          'Arial');
-        draw_text_transformed(
-          this.x,
-          this.y,
-          this.text,
-          'center',
-          0
-          );
-        draw_set_alpha(1);
+
+    update() {
+      this.x = (global.WIDTH / 1000) * this.position_x;
+      this.y = (global.HEIGHT / 1000) * this.position_y;
+      this.alpha += (this.target_alpha - this.alpha) / 30;
+      this.position_x -= this.alpha * 5;
+
+      if (this.x < -global.WIDTH) {
+        instanceDestroy(this);
       }
     }
-    </script>
+
+    draw() {
+      drawSetAlpha(this.alpha);
+      drawSetColor('black');
+      drawSetFont(
+        30 * this.size,
+        'Arial');
+      drawTextTransformed(
+        this.x,
+        this.y,
+        this.text,
+        'center',
+        0
+      );
+      drawSetAlpha(1);
+    }
+  }
+
+  start();
+</script>
+
 </html>

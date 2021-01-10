@@ -1,219 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-        <title>Game</title>
-    </head>
 
-    <style type="text/css">
-    html, body {
-      margin: 0;
-      height: 100%;
-      overflow: hidden
-    }
-    
-    * {
-        padding: 0 auto;
-        margin: 0 auto;
-    }
-    
-    /* border 제거 */
-    body {
-        border: 0;
-        background-color: white;
-    }
-    
-    /* canvas를 viewport 크기로 만들기 */
-    canvas {
-        overflow: hidden;
-        position: fixed;
-        display: block;
-    }
-    </style>
-    
-    <body>
-        <canvas id="canvas"></canvas>
-    </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>Game</title>
+</head>
 
-    <!-- script src="/socket.io-client/dist/socket.io.js" -->
-    <script type="text/javascript" src="https://rhea-so.github.io/Artist/product/artist.js"></script>
-    
-    <script>
-    const canvas = document.getElementById('canvas');
-    try {
-      set_canvas(canvas);
-      set_fullscreen(true);
-      set_debug_mode(true);
-      
-      start();
-      
+<style type="text/css">
+  html,
+  body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden
+  }
+
+  * {
+    padding: 0 auto;
+    margin: 0 auto;
+  }
+
+  /* border 제거 */
+  body {
+    border: 0;
+    background-color: white;
+  }
+
+  /* canvas를 viewport 크기로 만들기 */
+  canvas {
+    overflow: hidden;
+    position: fixed;
+    display: block;
+  }
+</style>
+
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+
+<!-- script src="/socket.io-client/dist/socket.io.js" -->
+<script type="text/javascript" src="https://rhea-so.github.io/Artist/product/artist.js"></script>
+
+<script>
+  const canvas = document.getElementById('canvas');
+  try {
+    set_canvas(canvas);
+    set_FULLSCREEN(true);
+    set_DEBUG_MODE(true);
+
+    start();
+
+    setTimeout(() => {
+      instance_create(Wallpaper, 0, 0, 1);
+      instance_create(MousePointer, 0, 0, 4);
+
       setTimeout(() => {
-        instance_create(Wallpaper, 0, 0, 1);
-        instance_create(MousePointer, 0, 0, 4);
-        
-        setTimeout(() => {
-          instance_create(Introduce, 0, 0, 3);
-          
-          setInterval(() => {
-          instance_create(FireCore, 
-          window.variables.display_width / 2, 
-          window.variables.display_height, 2);
-          }, 3000);
-        }, 1000);
-      }, 1);
-    } catch(err) {
-      alert(err);
-    }
-    
-    class FireCore extends ArtistElement {
-      create() {
-        this.power = -(window.variables.display_height / 2) / 25;
-        this.power_width = irandom_range(-10, 10);
-        
-        setTimeout(() => {
-          for (let i = 0; i < 100; i++) {
-            instance_create(FireBall, this.x, this.y, 2);
-          }
-          instance_destroy(this);
-        }, 1200);
-      }
-      
-      draw() {
-        this.y += this.power;
-        this.power += 0.5
-        this.x += this.power_width;
-        this.power_width += (0 - this.power_width) / 30;
-        draw_set_color(color.white);
-        draw_circle(
-          this.x,
-          this.y,
-          7,
-          true
-         );
-         draw_set_color(color.black);
-      }
-    }
-    
-    
-    class FireBall extends ArtistElement {
-      create() {
-        this.target_angle = irandom_range(0, 360);
-        this.target_x = lengthdir_x(irandom_range(100, 800), this.target_angle);
-        this.target_y = lengthdir_y(irandom_range(100, 600), this.target_angle);
-        this.start_x = this.x;
-        this.start_y = this.y;
-        this.size = irandom_range(2, 10);
-        this.alpha = irandom_range(4, 10);
-        this.time = 0;
-        this.max_time = 20;
-        
-        setTimeout(() => {
-          instance_destroy(this);
+        instance_create(Introduce, 0, 0, 3);
+
+        setInterval(() => {
+          instance_create(FireCore,
+            window.variables.DISPLAY_WIDTH / 2,
+            window.variables.DISPLAY_HEIGHT, 2);
         }, 3000);
-      }
-      
-      draw() {
-        this.time++;
-        this.time = Math.min(this.max_time, this.time);
-        if (this.time === this.max_time) {
-          this.target_y += 3;
+      }, 1000);
+    }, 1);
+  } catch (err) {
+    alert(err);
+  }
+
+  class FireCore extends ArtistElement {
+    create() {
+      this.power = -(window.variables.DISPLAY_HEIGHT / 2) / 25;
+      this.power_WIDTH = irandom_range(-10, 10);
+
+      setTimeout(() => {
+        for (let i = 0; i < 100; i++) {
+          instance_create(FireBall, this.x, this.y, 2);
         }
-        this.x += ((this.target_x + this.start_x) - this.x) / 25;
-        this.y += ((this.target_y + this.start_y) - this.y) / 20;
-       
-        this.alpha -= 0.05;
-        
-        draw_set_color(color.white);
-        draw_set_alpha(Math.min(Math.max(0, this.alpha), 1));
-        draw_circle(
-          this.x,
-          this.y,
-          this.size,
-          true
-         );
-         
-         draw_set_alpha(1);
-         draw_set_color(color.black);
-      }
+        instance_destroy(this);
+      }, 1200);
     }
-    
-    
-    class Introduce extends ArtistElement {
-      create() {
-        this.time = 0;
-        this.max_time = 50;
-        this.angle = 0;
-      }
-      
-      draw() {
-        this.time++;
-        this.time = Math.min(this.max_time, this.time);
-        this.angle = ease_in_out_expo(this.time / this.max_time) * 180 + 180;
-        
-        draw_set_font(50, 'Arial');
-        draw_set_color(color.white);
-        draw_text_transformed(
-          window.variables.display_width / 2,
-          window.variables.display_height - 200 * ease_in_out_expo(this.time / this.max_time) + 50,
-          'Firework!',
-          'center',
-          this.angle);
-        draw_set_color(color.black);
-      }
+
+    draw() {
+      this.y += this.power;
+      this.power += 0.5
+      this.x += this.power_WIDTH;
+      this.power_WIDTH += (0 - this.power_WIDTH) / 30;
+      drawSetColor(color.white);
+      drawCircle(
+        this.x,
+        this.y,
+        7,
+        true
+      );
+      drawSetColor(color.black);
     }
-    
-    class Wallpaper extends ArtistElement {
-      create() {
-        this.alpha = 0;
-        this.time = 0;
-        this.max_time = 50;
+  }
+
+
+  class FireBall extends ArtistElement {
+    create() {
+      this.target_angle = irandom_range(0, 360);
+      this.target_x = lengthdir_x(irandom_range(100, 800), this.target_angle);
+      this.target_y = lengthdir_y(irandom_range(100, 600), this.target_angle);
+      this.start_x = this.x;
+      this.start_y = this.y;
+      this.size = irandom_range(2, 10);
+      this.alpha = irandom_range(4, 10);
+      this.time = 0;
+      this.max_time = 20;
+
+      setTimeout(() => {
+        instance_destroy(this);
+      }, 3000);
+    }
+
+    draw() {
+      this.time++;
+      this.time = Math.min(this.max_time, this.time);
+      if (this.time === this.max_time) {
+        this.target_y += 3;
       }
-      
-      draw() {
-        this.time++;
-        this.time = Math.min(this.max_time, this.time);
-        this.alpha = 0.8 * ease_in_out_expo(this.time / this.max_time);
-        
-        draw_set_alpha(this.alpha);
-        draw_set_color(color.black);
-        draw_rectangle(
-          0,
-          0,
-          window.variables.display_width,
-          window.variables.display_height,
+      this.x += ((this.target_x + this.start_x) - this.x) / 25;
+      this.y += ((this.target_y + this.start_y) - this.y) / 20;
+
+      this.alpha -= 0.05;
+
+      drawSetColor(color.white);
+      drawSetAlpha(Math.min(Math.max(0, this.alpha), 1));
+      drawCircle(
+        this.x,
+        this.y,
+        this.size,
+        true
+      );
+
+      drawSetAlpha(1);
+      drawSetColor(color.black);
+    }
+  }
+
+
+  class Introduce extends ArtistElement {
+    create() {
+      this.time = 0;
+      this.max_time = 50;
+      this.angle = 0;
+    }
+
+    draw() {
+      this.time++;
+      this.time = Math.min(this.max_time, this.time);
+      this.angle = ease_in_out_expo(this.time / this.max_time) * 180 + 180;
+
+      drawSetFont(50, 'Arial');
+      drawSetColor(color.white);
+      drawTextTransformed(
+        window.variables.DISPLAY_WIDTH / 2,
+        window.variables.DISPLAY_HEIGHT - 200 * ease_in_out_expo(this.time / this.max_time) + 50,
+        'Firework!',
+        'center',
+        this.angle);
+      drawSetColor(color.black);
+    }
+  }
+
+  class Wallpaper extends ArtistElement {
+    create() {
+      this.alpha = 0;
+      this.time = 0;
+      this.max_time = 50;
+    }
+
+    draw() {
+      this.time++;
+      this.time = Math.min(this.max_time, this.time);
+      this.alpha = 0.8 * ease_in_out_expo(this.time / this.max_time);
+
+      drawSetAlpha(this.alpha);
+      drawSetColor(color.black);
+      drawRectangle(
+        0,
+        0,
+        window.variables.DISPLAY_WIDTH,
+        window.variables.DISPLAY_HEIGHT,
+        true);
+      drawSetAlpha(1);
+    }
+  }
+
+  // 마우스 좌표를 알기 위한 목적으로 만든 클래스
+  class MousePointer extends ArtistElement {
+    draw() {
+      if (window.variables.MOUSE_CLICK === true) {
+        drawSetAlpha(0.6);
+        drawSetColor(color.white);
+        drawCircle(
+          window.variables.MOUSE_X,
+          window.variables.MOUSE_Y,
+          3,
           true);
-        draw_set_alpha(1);
+
+        drawLine(
+          0,
+          window.variables.MOUSE_Y,
+          window.variables.DISPLAY_WIDTH,
+          window.variables.MOUSE_Y);
+
+        drawLine(
+          window.variables.MOUSE_X,
+          0,
+          window.variables.MOUSE_X,
+          window.variables.DISPLAY_HEIGHT);
+        drawSetAlpha(1);
+        drawSetColor(color.black);
       }
     }
-    
-    // 마우스 좌표를 알기 위한 목적으로 만든 클래스
-    class MousePointer extends ArtistElement {
-      draw() {
-        if (window.variables.mouse_click === true) {
-          draw_set_alpha(0.6);
-          draw_set_color(color.white);
-          draw_circle(
-            window.variables.mouse_x,
-            window.variables.mouse_y,
-            3,
-            true);
-          
-          draw_line(
-            0,
-            window.variables.mouse_y,
-            window.variables.display_width,
-            window.variables.mouse_y);
-            
-          draw_line(
-            window.variables.mouse_x,
-            0,
-            window.variables.mouse_x,
-            window.variables.display_height);
-           draw_set_alpha(1);
-           draw_set_color(color.black);
-        }
-      }
-    }
-    </script>
+  }
+</script>
+
 </html>

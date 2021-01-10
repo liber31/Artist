@@ -1,78 +1,101 @@
-import { set_fps, set_canvas, set_debug_mode, start, ArtistElement, instance_create, instance_destroy } from './artist.js';
-import { draw_set_filter, draw_rectangle, draw_text_transformed, draw_set_font, sprite_load, draw_sprite, draw_line, draw_text, draw_circle, draw_set_alpha, draw_set_color, color, draw_sprite_ext } from './draw.js';
-import { set_fullscreen } from './device.js';
-import { point_direction, lengthdir_x, lengthdir_y, random_range, irandom_range, ease_in_out_expo } from './math.js';
+import { setCanvas, setFps, setTargetSize, start } from "../artist/00_Routine/routine.js";
+import { ArtistElement, instanceDestroy } from "../artist/01_Object/element.js";
+import { setDebugMode } from "../artist/05_Debug/debug.js";
+import { setFullScreen } from "../artist/98_Platform/base.js";
+import { instanceCreate } from "../artist/01_Object/element.js";
+import { drawSetAlpha, drawSetColor } from "../artist/02_Draw/base.js";
+import { irandomRange, randomRange } from "../artist/04_Math/random.js";
+import { drawSetFont, drawTextTransformed } from "../artist/02_Draw/text.js";
 
-const canvas = document.getElementById('canvas');
+setCanvas(document.getElementById('canvas'));
+setTargetSize(480, 800);
+setFullScreen(true);
+setDebugMode(true);
+setFps(60);
 
-set_canvas(canvas);
-set_fullscreen(true);
-set_debug_mode(true);
-set_fps(60);
+const global = window.variables;
+
+const text_array = ['안녕하세요', 'Hello', 'こんにちは', '你好', 'Xin chào', 'Ciao', 'Guten Tag', 'Hola', 'Hej', 'salve', 'Apa kabar', 'merhaba', 'Habari za kucha', 'Сайн байна уу', 'Здравствуйте', 'mirëmëngjes', 'Bonjour'];
+try {
+    setTimeout(() => {
+        let index = 0;
+        setInterval(() => {
+            const text = instanceCreate(Text, 0, 0, 2);
+            text.text = text_array[index];
+            index++;
+            index %= text_array.length;
+        }, 1000);
+    }, 0);
+
+    setTimeout(() => {
+        setTargetSize(720, 1280);
+    }, 5000);
+
+} catch (err) {
+    alert(err);
+}
+
+class Text extends ArtistElement {
+    create() {
+        this.size = irandomRange(1, 5);
+        this.text = '안녕하세요';
+        this.position_x = 1300;
+        this.position_y = irandomRange(0, 1000);
+        this.alpha = 0;
+        this.target_alpha = randomRange(0.2, 0.8);
+    }
+
+    update() {
+        this.x = (global.WIDTH / 1000) * this.position_x;
+        this.y = (global.HEIGHT / 1000) * this.position_y;
+        this.alpha += (this.target_alpha - this.alpha) / 30;
+        this.position_x -= this.alpha * 5;
+
+        if (this.x < global.WIDTH / 2) {
+            instanceDestroy(this);
+        }
+    }
+
+    draw() {
+        drawSetAlpha(this.alpha);
+        drawSetColor('black');
+        drawSetFont(
+            30 * this.size,
+            'Arial');
+        drawTextTransformed(
+            this.x,
+            this.y,
+            this.text,
+            'center',
+            0
+        );
+        drawSetAlpha(1);
+    }
+}
+
+class Test extends ArtistElement {
+    create() {
+        setTimeout(() => {
+            instanceDestroy(this);
+        }, 3000);
+    }
+    draw() {
+        drawSetAlpha(this.alpha);
+        drawSetColor('black');
+        drawSetFont(
+            30,
+            'Arial');
+        drawTextTransformed(
+            global.WIDTH / 2,
+            global.HEIGHT / 2,
+            'TEST MESSAGE',
+            'center',
+            0
+        )
+        drawSetAlpha(1);
+    }
+}
+
+instanceCreate(Test, 0, 0, 2)
 
 start();
-
-sprite_load('https://p1.hiclipart.com/path/447/925/142/cass0uq2qnhaf4vvgjrrtl1kec-844ebd8e21cf6b9be1ad883291c85d1e.png?dl=1', 'tree');
-
-class Wallpaper extends ArtistElement {
-  create() {
-    this.alpha = 0;
-    this.time = 0;
-    this.max_time = 40;
-  }
-  
-  update() {
-    this.time += 20 * window.variables.delta_time;
-    this.time = Math.min(this.time, this.max_time);
-    this.alpha = ease_in_out_expo(this.time / this.max_time);
-  }
-  
-  draw() {
-    draw_set_color(color.black);
-    draw_rectangle(0, 0, window.variables.display_width, window.variables.display_height, true);
-    draw_set_alpha(0.5);
-    draw_set_color(color.white);
-    const fontSize = 100 * (window.variables.display_width / window.variables.display_height);
-    draw_set_font(fontSize, 'Arial');
-    draw_text_transformed(window.variables.display_width / 2, fontSize, '옷 따뜻하게 입고 다니세요', 'center', 0);
-    draw_set_alpha(1);
-    draw_sprite_ext(window.variables.display_width / 2, window.variables.display_height / 2, 'tree', 'center', 0.5, 0.5);
-    
-    draw_set_alpha(1 - this.alpha);
-    draw_rectangle(0, 0, window.variables.display_width, window.variables.display_height, true);
-    draw_set_alpha(1);
-  }
-}
-
-class Snow extends ArtistElement {
-  create() {    
-    this.xstart = irandom_range(0, window.variables.display_width);
-    this.r = irandom_range(2, 5);
-    this.time = 0;    
-    this.angle = irandom_range(0, 360);
-  }
-  
-  update() {
-    this.y = (window.variables.display_height / 100 / (5 - this.r) * this.time);
-    this.time += 20 * window.variables.delta_time;
-    this.angle = (this.angle + 2) % 360;
-    this.x = this.xstart + lengthdir_x(this.r * 3, this.angle);
-    if (this.y >= window.variables.display_height) {
-      instance_destroy(this);
-    }
-  }
-  
-  draw() {
-    draw_set_alpha(1);
-    draw_set_color(color.white);
-    draw_circle(this.x, this.y, this.r, true);
-  }
-}
-
-setTimeout(() => {
-  instance_create(Wallpaper, 0, 0, -1);
-}, 2000);
-
-setInterval(() => {
-  instance_create(Snow, 0, 0, -2);
-}, 100);

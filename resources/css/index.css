@@ -1,12 +1,17 @@
 html, body {
   margin: 0;
   height: 100%;
-  overflow: hidden
+  overflow: hidden;
 }
 
 * {
     padding: 0 auto;
     margin: 0 auto;
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
 }
 
 /* border 제거 */
