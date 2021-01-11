@@ -107,11 +107,13 @@ export async function render() {
     ctx.fillText('FPS: ' + window.variables.FPS, 10, 33);
   }
 
-  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-  canvas.getContext('2d').rect(0, 0, canvas.width, canvas.height);
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height); 
   canvas.getContext('2d').fillStyle = 'black';
-  canvas.getContext('2d').fill();
+  canvas.getContext('2d').fillRect(0, 0, canvas.width, canvas.height);
 
+  canvas.getContext('2d').fillStyle = 'white';
+  canvas.getContext('2d').fillRect(letterBoxWidth / 2, letterBoxHeight / 2, targetWidth, targetHeight);
+  
   canvas.getContext('2d').drawImage(window.variables.TARGET_CANVAS, 0, 0, window.variables.TARGET_CANVAS.width, window.variables.TARGET_CANVAS.height, letterBoxWidth / 2, letterBoxHeight / 2, targetWidth, targetHeight);
 
   window.variables.MOUSE_PRESSED = false;

@@ -1,15 +1,47 @@
-import { setCanvas, setFps, setTargetSize, start } from "../artist/00_Routine/routine.js";
-import { ArtistElement, instanceDestroy } from "../artist/01_Object/element.js";
-import { setDebugMode } from "../artist/05_Debug/debug.js";
-import { setFullScreen } from "../artist/98_Platform/base.js";
-import { instanceCreate } from "../artist/01_Object/element.js";
-import { drawSetAlpha, drawSetColor } from "../artist/02_Draw/base.js";
-import { irandomRange, randomRange } from "../artist/04_Math/random.js";
-import { drawSetFont, drawTextTransformed } from "../artist/02_Draw/text.js";
-import { drawLine, drawTriangle, drawRectangle, Shape, drawCircle } from "../artist/02_Draw/shape.js";
-import { easeInOutSine } from "../artist/04_Math/easing.js";
-import { lengthdirY } from "../artist/04_Math/coordinate.js";
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>Jump!</title>
+</head>
+
+<style type="text/css">
+  html,
+  body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden
+  }
+
+  * {
+    padding: 0 auto;
+    margin: 0 auto;
+  }
+
+  /* border 제거 */
+  body {
+    border: 0;
+    background-color: white;
+  }
+
+  /* canvas를 viewport 크기로 만들기 */
+  canvas {
+    overflow: hidden;
+    position: fixed;
+    display: block;
+  }
+</style>
+
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+
+<!-- script src="/socket.io-client/dist/socket.io.js" -->
+<script type="text/javascript" src="https://rhea-so.github.io/Artist/product/artist.js"></script>
+
+<script>
 setCanvas(document.getElementById('canvas'));
 setTargetSize(720, 1280);
 setFullScreen(true);
@@ -147,3 +179,6 @@ setTimeout(() => {
 }, 1500);
 
 start();
+</script>
+
+</html>

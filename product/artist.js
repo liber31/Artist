@@ -105,11 +105,13 @@ async function render() {
     ctx.fillText('FPS: ' + window.variables.FPS, 10, 33);
   }
 
-  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-  canvas.getContext('2d').rect(0, 0, canvas.width, canvas.height);
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height); 
   canvas.getContext('2d').fillStyle = 'black';
-  canvas.getContext('2d').fill();
+  canvas.getContext('2d').fillRect(0, 0, canvas.width, canvas.height);
 
+  canvas.getContext('2d').fillStyle = 'white';
+  canvas.getContext('2d').fillRect(letterBoxWidth / 2, letterBoxHeight / 2, targetWidth, targetHeight);
+  
   canvas.getContext('2d').drawImage(window.variables.TARGET_CANVAS, 0, 0, window.variables.TARGET_CANVAS.width, window.variables.TARGET_CANVAS.height, letterBoxWidth / 2, letterBoxHeight / 2, targetWidth, targetHeight);
 
   window.variables.MOUSE_PRESSED = false;
@@ -301,6 +303,51 @@ function setDrawMode(ctx) {
 }
 
 
+class Shape {
+  constructor(x, y) {
+    this.ctx = window.variables.TARGET_CANVAS.getContext('2d');
+    this.x = x;
+    this.y = y;
+  }
+  
+  start() {
+    setDrawMode(this.ctx);
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.x, this.y);
+    return this;
+  }
+  
+  line(x, y) {
+    this.ctx.lineTo(x, y);
+    return this;
+  }
+  
+  quadraticLine(x, y, targetX, targetY) {
+    this.ctx.quadraticCurveTo(targetX, targetY, x, y);
+    return this;
+  }
+  
+  bezierLine(x, y, targetX1, targetY1, targetX2, targetY2) {
+    this.ctx.bezierCurveTo(targetX1, targetY1, targetX2, targetY2, x, y);
+    return this;
+  }
+  
+  fill() {
+    this.ctx.fill();
+    return this;
+  }
+  
+  stroke() {
+    this.ctx.stroke();
+    return this;
+  }
+  
+  move(x, y) {
+    this.ctx.moveTo(x, y);
+    return this;
+  }    
+}
+
 /** 선을 그립니다 */
 function drawLine(x1, y1, x2, y2) {
     const ctx = window.variables.TARGET_CANVAS.getContext('2d');
@@ -322,31 +369,44 @@ function drawLineThick(x1, y1, x2, y2, width) {
     ctx.stroke();
 }
 
+function drawTriangle(x1, y1, x2, y2, x3, y3, fill) {
+    const ctx = window.variables.TARGET_CANVAS.getContext('2d');
+    setDrawMode(ctx);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x3, y3);
+    if (!fill) {
+    ctx.lineTo(x1, y1);
+        ctx.stroke();
+    } else {
+      ctx.fill();
+    }
+}
+
 /** 사각형을 그립니다 */
 function drawRectangle(x1, y1, x2, y2, fill) {
+    const ctx = window.variables.TARGET_CANVAS.getContext('2d');
     if (!fill) {
-        const ctx = window.variables.TARGET_CANVAS.getContext('2d');
         setDrawMode(ctx);
         ctx.beginPath();
         ctx.rect(x1, y1, x2 - x1, y2 - y1);
         ctx.stroke();
     } else {
-        const ctx = window.variables.TARGET_CANVAS.getContext('2d');
-        setDrawMode(ctx);
+        setDrawMode(ctx);        
         ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
     }
 }
 
 /** 동그라미를 그립니다 */
 function drawCircle(x, y, r, fill) {
+    const ctx = window.variables.TARGET_CANVAS.getContext('2d');
     if (!fill) {
-        const ctx = window.variables.TARGET_CANVAS.getContext('2d');
         setDrawMode(ctx);
         ctx.beginPath();
         ctx.arc(x, y, r, 0, 2 * Math.PI);
         ctx.stroke();
     } else {
-        const ctx = window.variables.TARGET_CANVAS.getContext('2d');
         setDrawMode(ctx);
         ctx.beginPath();
         ctx.arc(x, y, r, 0, 2 * Math.PI);
@@ -647,7 +707,7 @@ function easeOutElastic(value) {
     }
 
     let p = 0.3;
-    let s = p / 4;
+    let s = p / 4;s
     return Math.pow(2, -10 * value) * Math.sin((value - s) * (2 * Math.PI) / p) + 1;
 }
 

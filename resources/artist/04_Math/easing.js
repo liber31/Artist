@@ -179,7 +179,7 @@ export function easeOutElastic(value) {
     }
 
     let p = 0.3;
-    let s = p / 4;
+    let s = p / 4;s
     return Math.pow(2, -10 * value) * Math.sin((value - s) * (2 * Math.PI) / p) + 1;
 }
 
