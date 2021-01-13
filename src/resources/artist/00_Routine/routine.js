@@ -17,7 +17,7 @@ export function setCanvas(canvas) {
 }
 
 export function setFps(fpsInterval) {
-	window.variables.FPS_INTERVAL = 1000 / fpsInterval;
+	window.variables.FPS_INTERVAL = Math.floor(1000 / fpsInterval);
 }
 
 export async function render() {
@@ -132,7 +132,9 @@ export async function start() {
 		const now = performance.now();
 		elapsed = now - then;
 
-		if (elapsed > window.variables.FPS_INTERVAL) {
+		// 여기서 프레임 끊기는 문제 있었음
+		// Math.floor와 0일때 무시 처리로 해결함
+		if (window.variables.FPS_INTERVAL === 0 || elapsed >= window.variables.FPS_INTERVAL) {
 			then = now - (elapsed % window.variables.FPS_INTERVAL);
 			try {
 				await render();

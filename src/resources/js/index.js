@@ -14,7 +14,7 @@ setCanvas(document.getElementById('canvas'));
 setTargetSize(720, 1280);
 setFullScreen(true);
 setDebugMode(true);
-setFps(60);
+// setFps(60);
 
 let score = 0;
 let scoreSize = 100;

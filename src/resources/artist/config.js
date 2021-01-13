@@ -4,7 +4,7 @@ window.variables = {
 
 	DEBUG_MODE: false,
 	FPS: 0,
-	FPS_INTERVAL: 100 / 6,
+	FPS_INTERVAL: 0,
 	FULLSCREEN: false,
 	DELTA_TIME: 0,
 
