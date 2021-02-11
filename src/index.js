@@ -7,14 +7,14 @@ const app = express();
 
 app.use(cors());
 app.set('port', Number(process.env.port));
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'src', 'views'));
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
 app.get('/', (_req, res) => res.render('index.html'));
-app.use(express.static(path.join(__dirname, 'views')));
-app.use(express.static(path.join(__dirname, 'resources')));
-app.use(express.static(path.join(__dirname, 'node_modules')));
+app.use(express.static(path.join(__dirname, 'src', 'views')));
+app.use(express.static(path.join(__dirname, 'src', 'resources')));
+app.use(express.static(path.join(__dirname, 'src', 'node_modules')));
 
 
 app.use((_req, res, _next) => res.status(404).render('404.html'));
